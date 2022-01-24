@@ -12,7 +12,7 @@ Wants=network-online.target systemd-networkd-wait-online.service
 #Type=idle
 Type=simple
 ExecStart=/opt/iot/dsmr/power-mqtt.py
-ExecStop=/bin/kill -2 $MAINPID
+#ExecStop=/bin/kill -2 $MAINPID
 RemainAfterExit=true
 
 # incase log.py and mqtt.py is put in this location

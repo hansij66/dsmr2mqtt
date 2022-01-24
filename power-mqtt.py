@@ -31,7 +31,7 @@ V1.0.0:
         along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.2"
 __author__  = "Hans IJntema"
 __license__ = "GPLv3"
 
@@ -72,7 +72,7 @@ if sys.platform == "linux":
     sys.exit(1)
 
 
-def Close(exit_code):
+def close(exit_code):
   """
   Args:
     :param int exit_code: 0 success; 1 error
@@ -81,7 +81,7 @@ def Close(exit_code):
     None
   """
 
-  logger.info(f"INFO:Close: exitcode = {exit_code} >>")
+  logger.info(f"Exitcode = {exit_code} >>")
   sys.exit(exit_code)
 
 
@@ -129,8 +129,8 @@ def exit_gracefully(signal, stackframe):
   threads_stopper.set()
 
   # allow all loops to finish
-  logger.debug(f"wait 1 sec to shutdown everything else")
-  time.sleep(1)
+  #logger.debug(f"wait 1 sec to shutdown everything else")
+  #time.sleep(1)
   logger.info("<<")
 
 
@@ -169,9 +169,10 @@ def main():
 if __name__ == '__main__':
   logger.debug("__main__: >>")
   signal.signal(signal.SIGINT, exit_gracefully)
+  signal.signal(signal.SIGTERM, exit_gracefully)
 
   # start main program
   main()
 
   logger.debug("__main__: <<")
-  Close(0)
+  close(0)

@@ -3,3 +3,4 @@ venv
 .idea
 config.py
 readme.txt
+ansible.sh
