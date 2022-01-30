@@ -1,0 +1,23 @@
+# copy to /etc/systemd/system
+# systemctl enable power-mqtt.service
+
+[Unit]
+Description=P1 dsmr smartmeter
+
+Requires=network.target
+After=network.target
+Wants=network-online.target systemd-networkd-wait-online.service
+
+[Service]
+#Type=idle
+Type=simple
+ExecStart=/opt/iot/dsmr/dsmr-mqtt.py
+RemainAfterExit=true
+
+# incase log.py and mqtt.py is put in this location
+Environment="PYTHONPATH=/opt/python/lib"
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=network-online.target
