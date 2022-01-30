@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 """
   Send MQTT messages
 
@@ -8,6 +6,9 @@
   https://github.com/eclipse/paho.mqtt.python/blob/master/src/paho/mqtt/client.py
   https://www.eclipse.org/paho/index.php?page=clients/python/index.php
 
+
+  v1.0.0: initial version
+  v1.0.1: add last will
 
 
         This program is free software: you can redistribute it and/or modify
@@ -23,9 +24,11 @@
         You should have received a copy of the GNU General Public License
         along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__  = "Hans IJntema"
 __license__ = "GPLv3"
 
@@ -116,11 +119,12 @@ class mqttclient(threading.Thread):
 
     self.__mqtt_broker = mqtt_broker
     self.__mqtt_port = mqtt_port
-    self.__mqtt_client_id = mqtt_client_id
+    #self.__mqtt_client_id = mqtt_client_id
 
     self.__mqtt_stopper = mqtt_stopper
     self.__threads_stopper = threads_stopper
-    self.__mqtt = paho.Client(self.__mqtt_client_id)
+    self.__mqtt = paho.Client(mqtt_client_id)
+    self.__run = False
 
     # Todo parameterize
     self.__keepalive = 500
@@ -251,6 +255,25 @@ class mqttclient(threading.Thread):
     logger.debug(f"obj={obj}; level={level}; buf={buf}")
 
 
+  def will_set(self, topic, payload=None, qos=0, retain=False):
+    """
+    Set last will/testament
+    It is advised to call before self.run() is called
+
+    :param str topic:
+    :param str payload:
+    :param int qos:
+    :param bool retain:
+    :return: None
+    """
+    logger.debug(f">>")
+
+    if self.__run:
+      logger.warning(f"Last Will/testament is set after run() is called. Not advised per documentation")
+
+    self.__mqtt.will_set(topic, payload, qos, retain)
+
+
   def do_publish(self, topic, message, retain = False):
     """
     Publish topic & message to MQTT broker
@@ -311,6 +334,7 @@ class mqttclient(threading.Thread):
 
   def run(self):
     logger.info(f"Broker = {self.__mqtt_broker}>>")
+    self.__run = True
 
     # Wait till there is network connectivity to mqtt broker
     # Start with a small delay and incrementally (+20%) make larger

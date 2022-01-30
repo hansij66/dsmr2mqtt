@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 """
   Send Home Assistant Auto Discovery MQTT messages
 

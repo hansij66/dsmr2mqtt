@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 """
 DSMR Dictionary:
 dsmr version 5

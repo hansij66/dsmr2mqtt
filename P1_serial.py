@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 """
 Read dsmr telgrams from P1 USB serial.
 

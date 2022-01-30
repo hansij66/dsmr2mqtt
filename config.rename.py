@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 """
   Rename to config.py
 

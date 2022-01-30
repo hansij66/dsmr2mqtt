@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 """
   Parses P1 telegrams to MQTT messages
   Select MQTT messages based on dsmr50.py
@@ -209,15 +207,14 @@ class ParseTelegrams(threading.Thread):
       # block till event is set, but implement timeout to allow stopper
       self.__trigger.wait(timeout=1)
       if self.__trigger.is_set():
-
-        # We need to clear it (directly), otherwise it will run at  100% cpu
-        self.__trigger.clear()
-
         # Make copy of the telegram, for further parsing
         telegram = copy.deepcopy(self.__telegram)
 
         # Clear telegram list for next capture by ReadSerial class
         self.__telegram.clear()
+
+        # Clear trigger, serial can continue
+        self.__trigger.clear()
 
         self.__decode_telegrams(telegram)
 
