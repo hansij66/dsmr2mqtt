@@ -32,7 +32,7 @@ V1.0.0:
 
 """
 
-__version__ = "1.0.4"
+__version__ = "1.0.12"
 __author__  = "Hans IJntema"
 __license__ = "GPLv3"
 
@@ -52,6 +52,9 @@ import mqtt as mqtt
 from log import logger
 logger.setLevel(cfg.loglevel)
 
+# DEFAULT exit code
+# status=1/FAILURE
+__exit_code = 1
 
 # ------------------------------------------------------------------------------------
 # Instance running?
@@ -73,17 +76,16 @@ if sys.platform == "linux":
     sys.exit(1)
 
 
-def close(exit_code):
+def close():
   """
   Args:
-    :param int exit_code: 0 success; 1 error
 
   Returns:
     None
   """
 
-  logger.info(f"Exitcode = {exit_code} >>")
-  sys.exit(exit_code)
+  logger.info(f"Exitcode = {__exit_code} >>")
+  sys.exit(__exit_code)
 
 
 # ------------------------------------------------------------------------------------
@@ -127,11 +129,10 @@ def exit_gracefully(signal, stackframe):
 
   logger.debug(f"Signal {signal}: >>")
 
-  threads_stopper.set()
+  # status=0/SUCCESS
+  __exit_code = 0
 
-  # allow all loops to finish
-  #logger.debug(f"wait 1 sec to shutdown everything else")
-  #time.sleep(1)
+  threads_stopper.set()
   logger.info("<<")
 
 
@@ -148,7 +149,8 @@ def main():
   t_serial.start()
 
   # Set status to online
-  t_mqtt.do_publish(cfg.MQTT_TOPIC_PREFIX + "/status", "online", retain=True)
+  t_mqtt.set_status(cfg.MQTT_TOPIC_PREFIX + "/status", "online", retain=True)
+  t_mqtt.do_publish(cfg.MQTT_TOPIC_PREFIX + "/sw-version", f"{__version__}", retain=True)
 
   # block till t_serial stops receiving telegrams/exits
   t_serial.join()
@@ -156,7 +158,7 @@ def main():
   threads_stopper.set()
 
   # Set status to offline
-  t_mqtt.do_publish(cfg.MQTT_TOPIC_PREFIX + "/status", "offline", retain=True)
+  t_mqtt.set_status(cfg.MQTT_TOPIC_PREFIX + "/status", "offline", retain=True)
 
   # Todo check if MQTT queue is empty before setting stopper
   # Use a simple delay of 1sec before closing mqtt
@@ -179,4 +181,4 @@ if __name__ == '__main__':
   main()
 
   logger.debug("__main__: <<")
-  close(0)
+  close()

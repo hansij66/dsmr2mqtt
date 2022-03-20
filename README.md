@@ -46,6 +46,9 @@ For all SMR specs, see [netbeheer](https://www.netbeheernederland.nl/dossiers/sl
 GPL v3
 
 ## Versions
+1.0.12
+* Fix exit code (SUCCESS vs FAILURE)
+
 1.0.2 - 1.0.4:
 * Potential bug fix in parser
 * Add MQTT last will/testament

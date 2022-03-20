@@ -9,10 +9,9 @@ After=network.target
 Wants=network-online.target systemd-networkd-wait-online.service
 
 [Service]
-#Type=idle
-Type=simple
+Type=idle
 ExecStart=/opt/iot/dsmr/dsmr-mqtt.py
-RemainAfterExit=true
+#RemainAfterExit=true
 
 # incase log.py and mqtt.py is put in this location
 Environment="PYTHONPATH=/opt/python/lib"

@@ -158,9 +158,8 @@ class TaskReadSerial(threading.Thread):
       while self.__trigger.is_set():
         time.sleep(0.1)
 
-      self.__counter += 1
-
       # add a counter as first field to the list
+      self.__counter += 1
       self.__telegram.append(f"{self.__counter}")
 
       # Decode from binary to ascii
@@ -203,7 +202,7 @@ class TaskReadSerial(threading.Thread):
       self.__read_serial()
 
     except Exception as e:
-      logger.error(f"{e}")
+      logger.error(f"Exception: {e}")
 
     finally:
       self.__tty.close()

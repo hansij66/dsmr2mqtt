@@ -76,7 +76,7 @@ class Discovery(threading.Thread):
     d["icon"] = "mdi:home-automation"
     d["device"] = {"name": "dsmr reader",
                    "sw_version": self.__version,
-                   "model": "P1 USB/power-mqtt",
+                   "model": "P1 USB/dsmr-mqtt",
                    "manufacturer": "hansij66 @github.com",
                    "identifiers": ["dsmr"]
                    }
@@ -100,7 +100,7 @@ class Discovery(threading.Thread):
           d["device_class"] = "energy"
           d["state_class"] = "total"
         elif d["unit_of_measurement"] == "W":
-          d["device_class"] = "energy"
+          d["device_class"] = "power"
           #d["state_class"] = "measurement"
         elif d["unit_of_measurement"] == "A":
           d["device_class"] = "current"
@@ -109,6 +109,9 @@ class Discovery(threading.Thread):
         elif d["unit_of_measurement"] == "m3":
           d["device_class"] = "gas"
           d["state_class"] = "total"
+
+          # Homeassistant expects m3 and not liters
+          d["value_template"] = "{{value_json." + dsmr.definition[index][dsmr.MQTT_TAG] + "|float/1000|round(0)" + "}}"
         else:
           logger.warning(f"Unknown unit_of_measurement = {d['unit_of_measurement']}")
 
