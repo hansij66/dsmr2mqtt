@@ -156,7 +156,7 @@ class ParseTelegrams(threading.Thread):
           timeelapsed = int(ts - prevts)
 
           # Only broadcast this data:tag if sufficient time has elapsed based on maxrate
-          if (mintimeinterval != -1) and (timeelapsed > mintimeinterval):
+          if (mintimeinterval != -1) and (timeelapsed >= mintimeinterval):
             dict[tag] = data
 
             # and store current ts
