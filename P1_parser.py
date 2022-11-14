@@ -89,7 +89,7 @@ class ParseTelegrams(threading.Thread):
         self.__mqtt.do_publish(topic, message, retain=False)
 
 
-  def __decode_telegram_element(self, index, element, ts, listofjsondicts):
+  def __decode_telegram_element(self, index, element, ts, listofjsondicts, ratelimited_tags):
     #logger.debug(f">> index={index};  element={element}")
 
     try:
@@ -161,6 +161,8 @@ class ParseTelegrams(threading.Thread):
 
             # and store current ts
             self.__prevjsondict[topic+tag] = ts
+          elif mintimeinterval > 0:
+            ratelimited_tags.append({"tag": tag, "mintimeinterval": mintimeinterval, "timeelapsed": timeelapsed})
 
     except Exception as e:
       pass
@@ -186,17 +188,20 @@ class ParseTelegrams(threading.Thread):
 
     # epoch
     ts = int( time.time() )
-
+    ratelimited_tags = list()
     for element in telegram:
       try:
         # Extract the identifier (eg "1-0:1.8.1") of the element
         # and use this as index for dsmr.definition
         index = re.match(r"(\d{0,3}-\d{0,3}:\d{0,3}\.\d{0,3}\.\d{0,3}).*", element).group(1)
-        self.__decode_telegram_element(index, element, ts, listofjsondicts)
+        self.__decode_telegram_element(index, element, ts, listofjsondicts, ratelimited_tags)
 
       except Exception as e:
         # To handle empty lines or lines not matching dsmr definitions (checksum, header, empty line)
         pass
+
+    if ratelimited_tags:
+      logger.debug(f"Rate limited measurements (not published): {ratelimited_tags}")
 
     self.__publish_telegram(listofjsondicts)
 

@@ -40,6 +40,13 @@ MQTT_PASSWORD = "secret"
 # Set to 0 for unlimited rate
 MQTT_RATE = 100
 
+# Set max DSMR electricity measurements per hour to be queued & published to MQTT topic "dsmr/el"
+# Example: Disabled = 0, One per minute = 60, One every 30 seconds = 120, etc
+DSMR_EL_MAX_SAMPLE_RATE = 60
+# Set max DSMR gas measurements per hour to be queued & published to MQTT topic "dsmr/gas"
+# Example: Disabled = 0, One per minute = 60, One every 30 seconds = 120, etc
+DSMR_GAS_MAX_SAMPLE_RATE = 60
+
 if PRODUCTION:
   MQTT_TOPIC_PREFIX = "dsmr"
 else:
