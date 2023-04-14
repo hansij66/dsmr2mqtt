@@ -46,6 +46,10 @@ For all SMR specs, see [netbeheer](https://www.netbeheernederland.nl/dossiers/sl
 GPL v3
 
 ## Versions
+1.0.13
+* Add zero/non-zero check on data (as sometimes eg gas and power consumed values in influxdb became zero)
+
+
 1.0.12
 * Fix exit code (SUCCESS vs FAILURE)
 

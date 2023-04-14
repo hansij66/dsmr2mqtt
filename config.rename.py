@@ -36,10 +36,6 @@ MQTT_QOS = 1
 MQTT_USERNAME = "username"
 MQTT_PASSWORD = "secret"
 
-# Max nrof MQTT messages per second
-# Set to 0 for unlimited rate
-MQTT_RATE = 100
-
 if PRODUCTION:
   MQTT_TOPIC_PREFIX = "dsmr"
 else:

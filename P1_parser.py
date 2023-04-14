@@ -78,7 +78,7 @@ class ParseTelegrams(threading.Thread):
       # remove topic key:value pair, otherwise it will be packed in the mqtt json
       dict.pop("topic")
 
-      # There is always a timestamp key:value and a database:inlfuxdb in the dictionary (len = 2)
+      # There is always a timestamp key:value and a database:influxdb in the dictionary (len = 2)
       # If there are no other key-value pairs, skip publishing to MQTT
       if len(dict) > self.__nroftopics:
         topic = cfg.MQTT_TOPIC_PREFIX + "/" + topic
@@ -108,6 +108,13 @@ class ParseTelegrams(threading.Thread):
       # If type is string, there is no multiplication factor
       if cast != "str":
         data = eval(cast)(dsmr_data) * eval(cast)(multiply)
+
+        # Check if data is zero while not allowed
+        if dsmr.DATAVALIDATION == "1" and data == 0:
+          # throw exception
+          logger.warning(f"Throw exception, data == 0, not allowed")
+          raise ValueError("data == 0, not allowed, skip telegram")
+
       else:
         data = eval(cast)(dsmr_data)
         #logger.debug(f"CAST = {}")
@@ -137,6 +144,11 @@ class ParseTelegrams(threading.Thread):
       # Add tag:data pairs; which will be converted to mqtt json later on.
       # Add dictionary to list
       if not any(dict['topic'] == topic for dict in listofjsondicts):
+
+        # TODO
+        # Is this correct?
+        # Append per single dictionary elelemnt?
+
         d = {}
         d["topic"] = topic
         d["timestamp"] = ts

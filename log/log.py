@@ -22,6 +22,9 @@ script=os.path.basename(__main__.__file__)
 script=os.path.splitext(script)[0]
 logger = logging.getLogger(script + "." +  __name__)
 ====================================================================
+V1.2.0
+  11-4-2023
+  Restructering directory; __init__.py; no code change
 
 V1.1.0
   31-10-2021
@@ -29,7 +32,6 @@ V1.1.0
 
 V0.1:
 - initial version
-
 
         This program is free software: you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
@@ -48,18 +50,13 @@ V0.1:
 
 """
 
-__version__ = "1.1.0"
-__author__  = "Hans IJntema"
-__license__ = "GPLv3"
-
-
 
 # ------------------------------------------------------------------------------------
 # Logging
 # ------------------------------------------------------------------------------------
 import __main__
 import logging
-from   logging.handlers import SysLogHandler
+from logging.handlers import SysLogHandler
 import os
 import sys
 import getpass
@@ -67,18 +64,18 @@ import getpass
 
 currentuser = getpass.getuser()
 
-script=os.path.basename(__main__.__file__)
-script=os.path.splitext(script)[0]
+script = os.path.basename(__main__.__file__)
+script = os.path.splitext(script)[0]
 
 logger = logging.getLogger(script)
 
-# This setLevel determines wich messages are passed on to lower handlers
+# This setLevel determines which messages are passed on to lower handlers
 logger.setLevel(logging.INFO)  # DEBUG, INFO, WARNING, ERROR, CRITICAL
 logger.propagate = False
 
 # Console stdout
 c_handler = logging.StreamHandler(sys.stdout)
-# This setLevel determines wich messages are processed by this handler (assuming it arrives from global logger
+# This setLevel determines wich messages are processed by this handler (assuming it arrives from global logger)
 c_handler.setLevel(logging.DEBUG)
 c_format = logging.Formatter('%(name)s %(levelname)s: FUNCTION:%(funcName)s LINE:%(lineno)d: %(message)s')
 c_handler.setFormatter(c_format)
@@ -86,10 +83,12 @@ logger.addHandler(c_handler)
 
 # Syslog
 if sys.platform == "linux":
-  s_handler = logging.handlers.SysLogHandler( address=('/dev/log') )
-  # This setLevel determines wich messages are processed by this handler (assuming it arrives from global logger
+  s_handler = logging.handlers.SysLogHandler(address='/dev/log')
+  # This setLevel determines which messages are processed by this handler (assuming it arrives from global logger)
   s_handler.setLevel(logging.INFO)
-  s_format = logging.Formatter('%(name)s[%(process)d] %(levelname)s: %(asctime)s FUNCTION:%(funcName)s LINE:%(lineno)d: %(message)s', datefmt='%H:%M:%S')
+  s_format = logging.Formatter('%(name)s[%(process)d] %(levelname)s: '
+                               '%(asctime)s FUNCTION:%(funcName)s LINE:%(lineno)d: %(message)s',
+                               datefmt='%H:%M:%S')
   s_handler.setFormatter(s_format)
   logger.addHandler(s_handler)
 
@@ -103,17 +102,17 @@ try:
     f_handler = logging.FileHandler(f"/tmp/{script}.{currentuser}.log", 'a')
 
   f_handler.setLevel(logging.ERROR)
-  f_format = logging.Formatter('%(name)s[%(process)d] %(levelname)s: %(asctime)s FUNCTION:%(funcName)s LINE:%(lineno)d: %(message)s', datefmt='%Y-%m-%d,%H:%M:%S')
+  f_format = logging.Formatter('%(name)s[%(process)d] %(levelname)s: '
+                               '%(asctime)s FUNCTION:%(funcName)s LINE:%(lineno)d: %(message)s',
+                               datefmt='%Y-%m-%d,%H:%M:%S')
   f_handler.setFormatter(f_format)
   logger.addHandler(f_handler)
-except:
-  print(f"ERROR: /dev/shm/{script}.log permission denied")
+except Exception as e:
+  print(f"Exception {e}: /dev/shm/{script}.log permission denied")
 
-#logger.debug('This is a debug message')
-#logger.info('This is an info message')
-#logger.warning('This is a warning message')
-#logger.error('This is an error message')
-#logger.critical('This is a critical message')
-#logger.exception("Exception occurred")
-
-
+# logger.debug('This is a debug message')
+# logger.info('This is an info message')
+# logger.warning('This is a warning message')
+# logger.error('This is an error message')
+# logger.critical('This is a critical message')
+# logger.exception("Exception occurred")
