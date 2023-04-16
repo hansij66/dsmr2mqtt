@@ -69,7 +69,7 @@ definition = {
 
 # set serial frequency equal to gas_consumed, then use it as as tag for influxdb
 # If full serial is required, remove \d{26}
-"0-1:24.2.1":   ["gas consumption [m3]",          "gas", "gas_consumed",       "^.*\((.*)\*m3\)",  "float", "1", "1000", "60", "1", "mdi:counter"],
+"0-1:24.2.1":   ["gas consumption [m\u00b3]",          "gas", "gas_consumed",       "^.*\((.*)\*m3\)",  "float", "1", "1000", "60", "1", "mdi:counter"],
 "0-1:96.1.0":   ["Equipment Identifier",          "gas", "serial",             "^.*\(\d{26}(.*)\)","str",   "1", "1",    "60", "0", "mdi:counter"],
 
 "1-0:1.8.1":    ["EL consumed (Tariff 1) [Wh]",   "el", "el_consumed1",        "^.*\((.*)\*kWh\)", "float", "1", "1000", "0", "0", "mdi:counter"],
