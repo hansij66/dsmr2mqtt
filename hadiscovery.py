@@ -55,10 +55,8 @@ class Discovery(threading.Thread):
     self.__lastmqtt = 0
     self.__listofjsondicts = list()
 
-
   def __del__(self):
     logger.debug(">>")
-
 
   def __create_discovery_JSON(self):
     """
@@ -106,7 +104,7 @@ class Discovery(threading.Thread):
           d["device_class"] = "current"
         elif d["unit_of_measurement"] == "V":
           d["device_class"] = "voltage"
-        elif d["unit_of_measurement"] == "m3":
+        elif d["unit_of_measurement"] == "m3" or d["unit_of_measurement"] == "m\u00b3":
           d["device_class"] = "gas"
           d["state_class"] = "total"
 
