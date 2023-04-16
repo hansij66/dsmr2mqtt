@@ -13,6 +13,9 @@
 
 Only dsmr v50 is implemented; other versions can be supported by adapting dsmr50.py
 
+V1.1.1
+- ab35a50 Use superscript 3 for cubic meters.
+
 V1.1.0
 - Update for new MQTT v5 library
 
