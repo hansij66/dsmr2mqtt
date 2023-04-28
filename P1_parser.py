@@ -18,7 +18,6 @@
 
 """
 
-#import queue
 import threading
 import copy
 import re
@@ -69,28 +68,28 @@ class ParseTelegrams(threading.Thread):
   def __del__(self):
     logger.debug(">>")
 
-
   def __publish_telegram(self, listofjsondicts):
     # publish the dictionaries per topic
-    for dict in listofjsondicts:
-      topic = dict["topic"]
+    for d in listofjsondicts:
+      topic = d["topic"]
 
       # remove topic key:value pair, otherwise it will be packed in the mqtt json
-      dict.pop("topic")
+      d.pop("topic")
 
       # There is always a timestamp key:value and a database:influxdb in the dictionary (len = 2)
       # If there are no other key-value pairs, skip publishing to MQTT
-      if len(dict) > self.__nroftopics:
+      if len(d) > self.__nroftopics:
         topic = cfg.MQTT_TOPIC_PREFIX + "/" + topic
 
         # make resilient against double forward slashes in topic
         topic = topic.replace('//', '/')
-        message = json.dumps(dict, sort_keys=True, separators=(',',':'))
+        message = json.dumps(d, sort_keys=True, separators=(',', ':'))
         self.__mqtt.do_publish(topic, message, retain=False)
 
+    return
 
   def __decode_telegram_element(self, index, element, ts, listofjsondicts):
-    #logger.debug(f">> index={index};  element={element}")
+    # logger.debug(f">> index={index};  element={element}")
 
     try:
       # Extract result from telegram element, based on dsmr definition
@@ -110,6 +109,7 @@ class ParseTelegrams(threading.Thread):
         data = eval(cast)(dsmr_data) * eval(cast)(multiply)
 
         # Check if data is zero while not allowed
+        # TODO: seems not to work? For el_consumed
         if dsmr.DATAVALIDATION == "1" and data == 0:
           # throw exception
           logger.warning(f"Throw exception, data == 0, not allowed")
@@ -117,7 +117,7 @@ class ParseTelegrams(threading.Thread):
 
       else:
         data = eval(cast)(dsmr_data)
-        #logger.debug(f"CAST = {}")
+        # logger.debug(f"CAST = {}")
 
       # dict & json pair
       # tag:data
@@ -128,7 +128,7 @@ class ParseTelegrams(threading.Thread):
       if int(dsmr.definition[index][dsmr.MAXRATE]) == 0:
         mintimeinterval = -1
       else:
-        mintimeinterval = int( 3600/int(dsmr.definition[index][dsmr.MAXRATE]) )
+        mintimeinterval = int(3600/int(dsmr.definition[index][dsmr.MAXRATE]))
 
       # MQTT topic
       topic = str(dsmr.definition[index][dsmr.MQTT_TOPIC])
@@ -143,21 +143,21 @@ class ParseTelegrams(threading.Thread):
       # If topic does not exist yet, create & initialize dictionary for this topic;
       # Add tag:data pairs; which will be converted to mqtt json later on.
       # Add dictionary to list
-      if not any(dict['topic'] == topic for dict in listofjsondicts):
+      if not any(dictionary['topic'] == topic for dictionary in listofjsondicts):
 
         # TODO
         # Is this correct?
-        # Append per single dictionary elelemnt?
+        # Append per single dictionary element?
 
-        d = {}
-        d["topic"] = topic
-        d["timestamp"] = ts
-        if cfg.INFLUXDB:
-          d["database"] = cfg.INFLUXDB
-        listofjsondicts.append(d)
+        dict_element = {}
+        dict_element["topic"] = topic
+        dict_element["timestamp"] = ts
+        # if cfg.INFLUXDB:
+        #   d["database"] = cfg.INFLUXDB
+        listofjsondicts.append(dict_element)
 
-      for dict in listofjsondicts:
-        if dict['topic'] == topic:
+      for dictionary in listofjsondicts:
+        if dictionary['topic'] == topic:
           # get previous tag:data ts, which is mqtt broadcasted
           try:
             prevts = self.__prevjsondict[topic+tag]
@@ -169,14 +169,13 @@ class ParseTelegrams(threading.Thread):
 
           # Only broadcast this data:tag if sufficient time has elapsed based on maxrate
           if (mintimeinterval != -1) and (timeelapsed > mintimeinterval):
-            dict[tag] = data
+            dictionary[tag] = data
 
             # and store current ts
             self.__prevjsondict[topic+tag] = ts
 
     except Exception as e:
       pass
-
 
   def __decode_telegrams(self, telegram):
     """
@@ -197,7 +196,7 @@ class ParseTelegrams(threading.Thread):
 #    ts = int(round(time.time() * 1000)) * 1000000
 
     # epoch
-    ts = int( time.time() )
+    ts = int(time.time())
 
     for element in telegram:
       try:
@@ -211,7 +210,6 @@ class ParseTelegrams(threading.Thread):
         pass
 
     self.__publish_telegram(listofjsondicts)
-
 
   def run(self):
     logger.debug(">>")
