@@ -40,6 +40,7 @@ if PRODUCTION:
   MQTT_TOPIC_PREFIX = "dsmr"
 else:
   MQTT_TOPIC_PREFIX = "test_dsmr"
+  MQTT_CLIENT_UNIQ = 'mqtt-dsmr-test'
 
 # [ Home Assistant ]
 HA_DISCOVERY = True

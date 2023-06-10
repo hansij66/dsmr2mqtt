@@ -13,18 +13,6 @@
 
 Only dsmr v50 is implemented; other versions can be supported by adapting dsmr50.py
 
-V2.0.0
-- removed database field, adapted telegraf.conf
-
-V1.1.1
-- ab35a50 Use superscript 3 for cubic meters.
-
-V1.1.0
-- Update for new MQTT v5 library
-
-V1.0.0:
-  - Initial version
-
 
         This program is free software: you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
@@ -41,7 +29,7 @@ V1.0.0:
 
 """
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 __author__  = "Hans IJntema"
 __license__ = "GPLv3"
 

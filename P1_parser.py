@@ -59,10 +59,6 @@ class ParseTelegrams(threading.Thread):
     # timestamp key:value topic
     self.__nroftopics = 1
 
-    # database key:value topic
-    if cfg.INFLUXDB:
-      self.__nroftopics += 1
-
     logger.debug(f"NROF = {self.__nroftopics}")
 
   def __del__(self):
