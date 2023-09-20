@@ -68,7 +68,7 @@ class Discovery(threading.Thread):
     d = {}  # d = dict() does not work....
 
     # create device JSON
-    d["name"] = "dsmr reader"
+    d["name"] = "Status"
     d["unique_id"] = "dsmr-device"
     d["state_topic"] = cfg.MQTT_TOPIC_PREFIX + "/status"
     d["icon"] = "mdi:home-automation"
