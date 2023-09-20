@@ -46,6 +46,12 @@ For all SMR specs, see [netbeheer](https://www.netbeheernederland.nl/dossiers/sl
 GPL v3
 
 ## Versions
+3.0.0
+* Change HA Auto Discovery. Solve warning:
+Discovered entities with a name that starts with the device name
+This stops working in version 2024.2.0. Please address before upgrading.
+Credits: ricko1
+
 2.0.0 - 2.0.1
 * Updated mqtt library
 * Removed need for INFLUXDB label

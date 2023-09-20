@@ -72,7 +72,7 @@ class Discovery(threading.Thread):
     d["unique_id"] = "dsmr-device"
     d["state_topic"] = cfg.MQTT_TOPIC_PREFIX + "/status"
     d["icon"] = "mdi:home-automation"
-    d["device"] = {"name": "dsmr reader",
+    d["device"] = {"name": "HA dsmr reader",
                    "sw_version": self.__version,
                    "model": "P1 USB/dsmr-mqtt",
                    "manufacturer": "hansij66 @github.com",
