@@ -1,12 +1,47 @@
 # DSMR MQTT
 MQTT client for Belgian and Dutch Smart Meter (DSMR) - "Slimme Meter". Written in Python 3.x
  
-Connect Smart Meter via a P1 USB cable to e.g. Raspberry Pi.
+Connect Smart Meter via a P1 USB cable to e.g. Raspberry Pi
 
-Application will continuously read DSMR meter and parse telegrams.
-Parsed telegrams are send to MQTT broker.
+Application will continuously read DSMR meter and parse telegrams
+Parsed telegrams are send to MQTT broker
 
-Includes Home Assistant MQTT Auto Discovery.
+Includes Home Assistant MQTT Auto Discovery
+
+**Supported data fields:**
+
+| OBIS CODE	| MEANING |
+| ---|---|
+| 0-0:96.1.4	| ID	|
+| 0-0:96.1.1	| Serial number of electricity meter (in ASCII hex)	|
+| 0-0:1.0.0	| Timestamp of the telegram	|
+| 1-0:1.8.1	| Rate 1 (day) – total consumption	|
+| 1-0:1.8.2	| Rate 2 (night) – total consumption	|
+| 1-0:2.8.1	| Rate 1 (day) – total production	|
+| 1-0:2.8.2	| Rate 2 (night) – total production	|
+| 0-0:96.14.0	| Current rate (1=day,2=night)	|
+| 1-0:1.7.0	| All phases consumption	|
+| 1-0:2.7.0	| All phases production	|
+| 1-0:21.7.0	| L1 consumption	|
+| 1-0:41.7.0	| L2 consumption	|
+| 1-0:61.7.0	| L3 consumption	|
+| 1-0:22.7.0	| L1 production	|
+| 1-0:42.7.0	| L2 production	|
+| 1-0:62.7.0	| L3 production	|
+| 1-0:32.7.0	| L1 voltage	|
+| 1-0:52.7.0	| L2 voltage	|
+| 1-0:72.7.0	| L3 voltage	|
+| 1-0:31.7.0	| L1 current	|
+| 1-0:51.7.0	| L2 current	|
+| 1-0:71.7.0	| L3 current	|
+| 0-0:96.3.10	| Switch position electricity	|
+| 0-0:17.0.0	| Max. allowed power/phase	|
+| 1-0:31.4.0	| Max. allowed current/plase	|
+| 0-0:96.13.0	| Message	|
+| 0-1:24.1.0	| Other devices on bus	|
+| 0-1:96.1.1	| Serial number of natural gas meter (in ASCII hex)	|
+| 0-1:24.4.0	| Switch position natural gas	|
+| 0-1:24.2.3	| Reading from natural gas meter (timestamp) (value)	|
 
 In `dsmr50.py`, specify:
 * Which messages to be parsed
@@ -30,7 +65,7 @@ A typical MQTT message broadcasted
 }
 ```
 
-A virtual DSMR parameter is implemented (el_consumed and el_returned, which is sum of tarif1 and tarif2 (nacht/low en day/normal tariff)) - as some have a dual tarif meter, while energy company administratively considers this as a mono tarif meter.
+A virtual DSMR parameter is implemented (el_consumed and el_returned, which is sum of tarif1 and tarif2 (nacht/low en dag/normal tariff)) - as some have a dual tariff meter, while energy company administratively considers this as a mono tarif meter.
 
 ```diff
 -ATTENTION:
