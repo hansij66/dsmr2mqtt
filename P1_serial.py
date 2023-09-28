@@ -1,24 +1,23 @@
 """
-Read dsmr telgrams from P1 USB serial.
+Read dsmr telgrams from P1 USB serial
 
+To test in bash the P1 USB connector:
+sudo apt-get install -y python3-serial
+sudo chmod o+rw /dev/ttyUSB0
+python3 -m serial.tools.miniterm /dev/ttyUSB0 115200 --xonxoff
 
-To test in bash the P1 usb connector:
-raw -echo < /dev/ttyUSB0; cat -vt /dev/ttyUSB0
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-
-        This program is free software: you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or
-        (at your option) any later version.
-
-        This program is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
-
-        You should have received a copy of the GNU General Public License
-        along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import serial
