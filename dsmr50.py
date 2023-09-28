@@ -30,6 +30,8 @@ INDEX = {
         along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+# See the spec for the available OBIS codes: https://www.netbeheernederland.nl/_upload/Files/Slimme_meter_15_a727fce1f1.pdf
+
 DESCRIPTION = 0       # Description, specify units of measure between []
 MQTT_TOPIC = 1        # MQTT base topic; will be packed in a json message
 MQTT_TAG = 2          # MQTT tag in json message; Need to be unique per topic
@@ -44,56 +46,55 @@ HA_DISCOVERY = 8      # 0 (False) or 1 (True)
 HA_ICON = 9           # HA icons, check https://materialdesignicons.com/
 
 
-
-# uncomment what is not being used
+# Uncomment what is not being used
 # MQTT_TOPIC is prefixed with MQTT_TOPIC_PREFIX (config.py)
 definition = {
 "1-3:0.2.8":    ["DSMR Version meter",            "system", "dsmr_version",     "^.*\((.*)\)",      "int", "0", "1", "12",  "0"],
 
-# set serial frequecy equal to el_consumed, then use it as as tag for influxdb; truncated to last 8 digits
+# set serial frequecy equal to elec_consumed, then use it as as tag for influxdb; truncated to last 8 digits
 # If full serial is required, remove \d{26}
-"0-0:96.1.1":   ["Equipment identifier",          "el", "serial",              "^.*\(\d{26}(.*)\)","str",   "1", "1",    "60", "0", "mdi:counter"],
-"0-0:1.0.0":    ["Timestamp [s]",                 "el", "timestamp",           "^.*\((.*)W\)",     "int",   "1", "1",    "0",   "0", "mdi:counter"],
-"0-0:96.7.21":  ["Number of power failures",      "el", "power_failures",      "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:counter"],
-"0-0:96.7.9":   ["Number of long power failures", "el", "long_power_failures", "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:counter"],
-"0-0:96.14.0":  ["Tariff indicator electricity",  "el", "tariff_indicator",    "^.*\((.*)\)",      "int",   "0", "1",    "0",   "0", "mdi:counter"],
+"0-0:96.1.1":   ["Equipment identifier",                   "elec",     "serial",              "^.*\(\d{26}(.*)\)","str",   "1", "1",    "60", "0", "mdi:counter"],
+"0-0:1.0.0":    ["Timestamp [s]",                          "elec",     "timestamp",           "^.*\((.*)W\)",     "int",   "1", "1",    "0",   "0", "mdi:counter"],
+"0-0:96.7.21":  ["Number of power failures",               "elec",     "power_failures",      "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:counter"],
+"0-0:96.7.9":   ["Number of long power failures",          "elec",     "long_power_failures", "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:counter"],
+"0-0:96.14.0":  ["Tariff indicator electricity",           "elec",     "tariff_indicator",    "^.*\((.*)\)",      "int",   "0", "1",    "0",   "0", "mdi:counter"],
 
-"1-0:21.7.0":   ["Power consumption L1 [W]",      "el", "P_L1_consumed",       "^.*\((.*)\*kW\)",  "float", "0", "1000", "60",   "0", "mdi:gauge"],
-"1-0:41.7.0":   ["Power consumption L2 [W]",      "el", "P2_consumed",         "^.*\((.*)\*kW\)",  "float", "0", "1000", "60",   "0", "mdi:gauge"],
-"1-0:61.7.0":   ["Power consumption L3 [W]",      "el", "P3_consumed",         "^.*\((.*)\*kW\)",  "float", "0", "1000", "60",   "0", "mdi:gauge"],
-"1-0:22.7.0":   ["Power production L1 [W]",       "el", "P1_produced",         "^.*\((.*)\*kW\)",  "float", "0", "1000", "60",   "0", "mdi:gauge"],
-"1-0:42.7.0":   ["Power production L2 [W]",       "el", "P2_produced",         "^.*\((.*)\*kW\)",  "float", "0", "1000", "60",   "0", "mdi:gauge"],
-"1-0:62.7.0":   ["Power production L3 [W]",       "el", "P3_produced",         "^.*\((.*)\*kW\)",  "float", "0", "1000", "60",   "0", "mdi:gauge"],
-"1-0:1.7.0":    ["Total power consumption [W]",   "el", "p_consumed",          "^.*\((.*)\*kW\)",  "float", "0", "1000", "60", "1", "mdi:gauge"],
-"1-0:2.7.0":    ["Total power production [W]",    "el", "p_produced",          "^.*\((.*)\*kW\)",  "float", "0", "1000", "60", "1", "mdi:gauge"],
+"1-0:21.7.0":   ["Power consumption L1 [W]",               "elec",     "P_L1_consumed",       "^.*\((.*)\*kW\)",  "float", "0", "1000", "60",   "0", "mdi:gauge"],
+"1-0:41.7.0":   ["Power consumption L2 [W]",               "elec",     "P_L2_consumed",         "^.*\((.*)\*kW\)",  "float", "0", "1000", "60",   "0", "mdi:gauge"],
+"1-0:61.7.0":   ["Power consumption L3 [W]",               "elec",     "P_L3_consumed",         "^.*\((.*)\*kW\)",  "float", "0", "1000", "60",   "0", "mdi:gauge"],
+"1-0:22.7.0":   ["Power production L1 [W]",                "elec",     "P_L1_produced",         "^.*\((.*)\*kW\)",  "float", "0", "1000", "60",   "0", "mdi:gauge"],
+"1-0:42.7.0":   ["Power production L2 [W]",                "elec",     "P_L2_produced",         "^.*\((.*)\*kW\)",  "float", "0", "1000", "60",   "0", "mdi:gauge"],
+"1-0:62.7.0":   ["Power production L3 [W]",                "elec",     "P_L3_produced",         "^.*\((.*)\*kW\)",  "float", "0", "1000", "60",   "0", "mdi:gauge"],
+"1-0:1.7.0":    ["Total power consumption [W]",            "elec",     "P_consumed",          "^.*\((.*)\*kW\)",  "float", "0", "1000", "60", "1", "mdi:gauge"],
+"1-0:2.7.0":    ["Total power production [W]",             "elec",     "P_produced",          "^.*\((.*)\*kW\)",  "float", "0", "1000", "60", "1", "mdi:gauge"],
 
 # set serial frequency equal to gas_consumed, then use it as as tag for influxdb
 # If full serial is required, remove \d{26}
-"0-1:24.2.1":   ["gas consumption [m\u00b3]",     "gas", "gas_consumed",       "^.*\((.*)\*m3\)",  "float", "1", "1000", "60", "1", "mdi:counter"],
-"0-1:96.1.0":   ["Equipment Identifier",          "gas", "serial",             "^.*\(\d{26}(.*)\)","str",   "1", "1",    "60", "0", "mdi:counter"],
+"0-1:24.2.1":   ["Gas consumption [m\u00b3]",              "gas",      "gas_consumed",       "^.*\((.*)\*m3\)",  "float", "1", "1000", "60", "1", "mdi:counter"],
+"0-1:96.1.0":   ["Equipment Identifier",                   "gas",      "serial",             "^.*\(\d{26}(.*)\)","str",   "1", "1",    "60", "0", "mdi:counter"],
 
-"1-0:1.8.1":    ["EL consumed (Tariff 1) [Wh]",   "el", "el_consumed1",        "^.*\((.*)\*kWh\)", "float", "1", "1000", "0", "0", "mdi:counter"],
-"1-0:1.8.2":    ["EL consumed (Tariff 2) [Wh]",   "el", "el_consumed2",        "^.*\((.*)\*kWh\)", "float", "1", "1000", "0", "0", "mdi:counter"],
-"1-0:2.8.1":    ["EL produced (Tariff 1) [Wh]",   "el", "el_produced1",        "^.*\((.*)\*kWh\)", "float", "1", "1000", "0", "0", "mdi:counter"],
-"1-0:2.8.2":    ["EL produced (Tariff 2) [Wh]",   "el", "el_produced2",        "^.*\((.*)\*kWh\)", "float", "1", "1000", "0", "0", "mdi:counter"],
+"1-0:1.8.1":    ["Electricity consumed (Tariff 1) [Wh]",   "elec",     "elec_consumed_tar1",  "^.*\((.*)\*kWh\)", "float", "1", "1000", "0", "0", "mdi:counter"],
+"1-0:1.8.2":    ["Electricity consumed (Tariff 2) [Wh]",   "elec",     "elec_consumed_tar2",  "^.*\((.*)\*kWh\)", "float", "1", "1000", "0", "0", "mdi:counter"],
+"1-0:2.8.1":    ["Electricity produced (Tariff 1) [Wh]",   "elec",     "elec_produced_tar1",  "^.*\((.*)\*kWh\)", "float", "1", "1000", "0", "0", "mdi:counter"],
+"1-0:2.8.2":    ["Electricity produced (Tariff 2) [Wh]",   "elec",     "elec_produced_tar2",  "^.*\((.*)\*kWh\)", "float", "1", "1000", "0", "0", "mdi:counter"],
 
 # Virtual, not existing in dsmr telegram & specification, to sum tarif 1 & 2 to a single message
-"1-0:1.8.3":    ["EL consumed [Wh]",              "el", "el_consumed",         "^.*\((.*)\*kWh\)", "float", "1", "1000", "60", "1", "mdi:counter"],
-"1-0:2.8.3":    ["EL produced [Wh]",              "el", "el_produced",         "^.*\((.*)\*kWh\)", "float", "1", "1000", "60", "1", "mdi:counter"],
+"1-0:1.8.3":    ["Electricity consumed [Wh]",              "elec",     "elec_consumed",       "^.*\((.*)\*kWh\)", "float", "1", "1000", "60", "1", "mdi:counter"],
+"1-0:2.8.3":    ["Electricity produced [Wh]",              "elec",     "elec_produced",       "^.*\((.*)\*kWh\)", "float", "1", "1000", "60", "1", "mdi:counter"],
 
-"1-0:32.7.0":   ["Voltage L1 [V]",                "el",     "V1",              "^.*\((.*)\*V\)",   "float", "0", "1",    "60", "1", "mdi:gauge"],
-"1-0:52.7.0":   ["Voltage L2 [V]",                "el",     "V2",              "^.*\((.*)\*V\)",   "float", "0", "1",    "60", "1", "mdi:gauge"],
-"1-0:72.7.0":   ["Voltage L3 [V]",                "el",     "V3",              "^.*\((.*)\*V\)",   "float", "0", "1",    "60", "1", "mdi:gauge"],
-"1-0:31.7.0":   ["Current L1 [A]",                "el",     "I1",              "^.*\((.*)\*A\)",   "int",   "0", "1",    "0",   "0", "mdi:gauge"],
-"1-0:51.7.0":   ["Current L2 [A]",                "el",     "I2",              "^.*\((.*)\*A\)",   "int",   "0", "1",    "0",   "0", "mdi:gauge"],
-"1-0:71.7.0":   ["Current L3 [A]",                "el",     "I3",              "^.*\((.*)\*A\)",   "int",   "0", "1",    "0",   "0", "mdi:gauge"],
+"1-0:32.7.0":   ["Voltage L1 [V]",                         "elec",     "V_L1",                  "^.*\((.*)\*V\)",   "float", "0", "1",    "60", "1", "mdi:gauge"],
+"1-0:52.7.0":   ["Voltage L2 [V]",                         "elec",     "V_L2",                  "^.*\((.*)\*V\)",   "float", "0", "1",    "60", "1", "mdi:gauge"],
+"1-0:72.7.0":   ["Voltage L3 [V]",                         "elec",     "V_L3",                  "^.*\((.*)\*V\)",   "float", "0", "1",    "60", "1", "mdi:gauge"],
+"1-0:31.7.0":   ["Current L1 [A]",                         "elec",     "I_L1",                  "^.*\((.*)\*A\)",   "int",   "0", "1",    "0",   "0", "mdi:gauge"],
+"1-0:51.7.0":   ["Current L2 [A]",                         "elec",     "I_L2",                  "^.*\((.*)\*A\)",   "int",   "0", "1",    "0",   "0", "mdi:gauge"],
+"1-0:71.7.0":   ["Current L3 [A]",                         "elec",     "I_L3",                  "^.*\((.*)\*A\)",   "int",   "0", "1",    "0",   "0", "mdi:gauge"],
 
-"1-0:32.36.0":  ["Voltage swells L1",             "el",     "V1_swells",       "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:gauge"],
-"1-0:52.36.0":  ["Voltage swells L2",             "el",     "V2_swells",       "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:gauge"],
-"1-0:72.36.0":  ["Voltage swells L3",             "el",     "V3_swells",       "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:gauge"],
-"1-0:32.32.0":  ["Voltage sags L1",               "el",     "V1_sags",         "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:gauge"],
-"1-0:52.32.0":  ["Voltage sags L2",               "el",     "V2_sags",         "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:gauge"],
-"1-0:72.32.0":  ["Voltage sags L3",               "el",     "V3_sags",         "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:gauge"]
+"1-0:32.36.0":  ["Voltage swells L1",                      "elec",     "V_L1_swells",           "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:gauge"],
+"1-0:52.36.0":  ["Voltage swells L2",                      "elec",     "V_L2_swells",           "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:gauge"],
+"1-0:72.36.0":  ["Voltage swells L3",                      "elec",     "V_L3_swells",           "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:gauge"],
+"1-0:32.32.0":  ["Voltage sags L1",                        "elec",     "V_L1_sags",             "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:gauge"],
+"1-0:52.32.0":  ["Voltage sags L2",                        "elec",     "V_L2_sags",             "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:gauge"],
+"1-0:72.32.0":  ["Voltage sags L3",                        "elec",     "V_L3_sags",             "^.*\((.*)\)",      "int",   "0", "1",    "12",  "0", "mdi:gauge"]
 }
 
 # Not supported:
