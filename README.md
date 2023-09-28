@@ -19,6 +19,10 @@ A typical MQTT message broadcasted
 
 A virtual DSMR parameter is implemented (el_consumed and el_returned, which is sum of tarif1 and tarif2 (nacht/low en day/normal tariff)) - as some have a dual tarif meter, while energy company administratively considers this as a mono tarif meter.
 
+## Preparation
+Test if P1 adapter is functional and providing dsmr data by running in a bash shell:
+* `tail -f /dev/ttyUSB0`
+
 ## Usage:
 * Copy `systemd/power-mqtt.service` to `/etc/systemd/system`
 * Adapt path in `power-mqtt.service` to your install location (default: `/opt/iot/dsmr`)
@@ -27,16 +31,16 @@ A virtual DSMR parameter is implemented (el_consumed and el_returned, which is s
 * `sudo systemctl start power-mqtt`
 
 Use
-http://mqtt-explorer.com/
+* http://mqtt-explorer.com/
 to test &  inspect MQTT messages
 
 A `test/dsmr.raw` simulation file is provided.
 Set `PRODUCTION = False` in `config.py` to use the simulation file. No P1/serial connection is required.
 
 ## Requirements
+Install following python3 libraries
 * paho-mqtt
 * pyserial
-* python 3.x
 
 Tested under Linux; there is no reason why it does not work under Windows.
 Tested with DSMR v5.0 meter. For other DSMR versions, `dsmr50.py` needs to be adapted.
