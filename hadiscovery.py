@@ -116,7 +116,7 @@ class Discovery(threading.Thread):
           logger.warning(f"Unknown unit_of_measurement = {d['unit_of_measurement']}")
 
         d["icon"] = dsmr.definition[index][dsmr.HA_ICON]
-        d["device"] = { "identifiers": [ "dsmr" ] }
+        d["device"] = { "identifiers": [ "dsmr2mqtt" ] }
 
         self.__listofjsondicts.append(d)
 
