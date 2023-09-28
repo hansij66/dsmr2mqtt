@@ -75,7 +75,7 @@ class Discovery(threading.Thread):
     d["device"] = {"name": "HA dsmr reader",
                    "sw_version": self.__version,
                    "model": "P1 USB/dsmr-mqtt",
-                   "manufacturer": "hansij66 @github.com",
+                   "manufacturer": "https://github.com/smartathome/dsmr2mqtt",
                    "identifiers": ["dsmr"]
                    }
 
@@ -102,8 +102,10 @@ class Discovery(threading.Thread):
           #d["state_class"] = "measurement"
         elif d["unit_of_measurement"] == "A":
           d["device_class"] = "current"
+          #d["state_class"] = "measurement"
         elif d["unit_of_measurement"] == "V":
           d["device_class"] = "voltage"
+          #d["state_class"] = "measurement"
         elif d["unit_of_measurement"] == "m3" or d["unit_of_measurement"] == "m\u00b3":
           d["device_class"] = "gas"
           d["state_class"] = "total"
