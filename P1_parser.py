@@ -80,6 +80,7 @@ class ParseTelegrams(threading.Thread):
         # make resilient against double forward slashes in topic
         topic = topic.replace('//', '/')
         message = json.dumps(d, sort_keys=True, separators=(',', ':'))
+        logger.debug(f"Message: {message}: >>")
         self.__mqtt.do_publish(topic, message, retain=False)
 
     return
