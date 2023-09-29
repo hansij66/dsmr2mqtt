@@ -68,6 +68,7 @@ class Discovery(threading.Thread):
     d = {}  # d = dict() does not work....
 
     # create device JSON
+    logger.debug('LOGGER: create device JSON')
     d["name"] = "Status"
     d["unique_id"] = "dsmr-device"
     d["state_topic"] = cfg.MQTT_TOPIC_PREFIX + "/status"
@@ -82,6 +83,7 @@ class Discovery(threading.Thread):
     self.__listofjsondicts.append(d)
 
     # iterate through all dsmr.defintions
+    logger.debug('LOGGER: iterate through all dsmr.defintions')
     for index in dsmr.definition:
       # select definitions with discovery enabled
       if int(dsmr.definition[index][dsmr.HA_DISCOVERY]):
@@ -89,6 +91,7 @@ class Discovery(threading.Thread):
         d["unique_id"] = dsmr.definition[index][dsmr.MQTT_TAG]
         d["state_topic"] = cfg.MQTT_TOPIC_PREFIX + "/" + dsmr.definition[index][dsmr.MQTT_TOPIC]
         d["name"] = dsmr.definition[index][dsmr.DESCRIPTION]
+        print('Name: ' + d["name"])
         d["unit_of_measurement"] = re.match(".*\[(\w+)\].*", dsmr.definition[index][dsmr.DESCRIPTION]).group(1)
         d["value_template"] = "{{value_json." + dsmr.definition[index][dsmr.MQTT_TAG] + "}}"
 
@@ -117,6 +120,8 @@ class Discovery(threading.Thread):
 
         d["icon"] = dsmr.definition[index][dsmr.HA_ICON]
         d["device"] = { "identifiers": [ "dsmr2mqtt" ] }
+
+        logger.debug('LOGGER: %s', d)
 
         self.__listofjsondicts.append(d)
 
