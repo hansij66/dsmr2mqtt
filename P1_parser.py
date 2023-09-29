@@ -66,9 +66,13 @@ class ParseTelegrams(threading.Thread):
 
   def __publish_telegram(self, listofjsondicts):
     # publish the dictionaries per topic
+    logger.debug('LOGGER: publish the dictionaries per topic')
     for d in listofjsondicts:
       topic = d["topic"]
+      
+      logger.debug(f'LOGGER: topic = {topic}')
 
+      logger.debug("Publishing telegram")
       # remove topic key:value pair, otherwise it will be packed in the mqtt json
       d.pop("topic")
 
@@ -94,7 +98,15 @@ class ParseTelegrams(threading.Thread):
       # .....this is normally "dangerous", as you can define any python function....but it is hardcoded
       # in dsmr50.py file, which should be ro for regular users
       cast = dsmr.definition[index][dsmr.DATATYPE]
-      dsmr_data = re.match(dsmr.definition[index][dsmr.REGEX], element).group(1)
+      logger.debug(f"Cast: {cast}")
+      # PEAK VALUES
+      if index == "1-0:1.6.0":
+        dsmr_data = re.match(dsmr.definition[index][dsmr.REGEX], element).group(1)
+        dsmr_data_2 = re.match(dsmr.definition[index][dsmr.REGEX], element).group(2)
+      else:
+        dsmr_data = re.match(dsmr.definition[index][dsmr.REGEX], element).group(1)
+      logger.debug(f"DSMR data: {dsmr_data}")
+      logger.debug(f"DSMR data 2: {dsmr_data_2}")
 
       # multiplication factor for data, eg to convert kW to W
       multiply = dsmr.definition[index][dsmr.MULTIPLICATION]
@@ -115,6 +127,7 @@ class ParseTelegrams(threading.Thread):
       else:
         data = eval(cast)(dsmr_data)
         # logger.debug(f"CAST = {}")
+        logger.debug(f"Peak values: {data}")
 
       # dict & json pair
       # tag:data
@@ -199,10 +212,16 @@ class ParseTelegrams(threading.Thread):
       try:
         # Extract the identifier (eg "1-0:1.8.1") of the element
         # and use this as index for dsmr.definition
+        logger.debug(f'LOGGER: element = {element}')
+        global index
         index = re.match(r"(\d{0,3}-\d{0,3}:\d{0,3}\.\d{0,3}\.\d{0,3}).*", element).group(1)
+        logger.debug(f'LOGGER: index = {index}')
         self.__decode_telegram_element(index, element, ts, listofjsondicts)
 
       except Exception as e:
+        # If element = "/FLU5\253770234_A"
+        if re.match("^\/(FLU5)\\.*", element):
+          logger.debug(f'LOGGER: element = {element}')
         # To handle empty lines or lines not matching dsmr definitions (checksum, header, empty line)
         pass
 
