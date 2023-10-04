@@ -1,10 +1,9 @@
 # DSMR MQTT
-MQTT client for Belgian and Dutch Smart Meter (DSMR) - "Slimme Meter". Written in Python 3.x
+MQTT client for Belgian Fluvius smart energy meter (DSMR5 spec) - "Slimme Meter". Written in Python 3.x
  
-Connect Smart Meter via a P1 USB cable to e.g. Raspberry Pi
+Connect the smart meter via a P1 USB cable to e.g. Raspberry Pi
 
-Application will continuously read DSMR meter and parse telegrams
-Parsed telegrams are send to MQTT broker
+Application will continuously read DSMR meter and parse telegrams which are send to a MQTT broker
 
 Includes Home Assistant MQTT Auto Discovery
 
