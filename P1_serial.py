@@ -65,6 +65,7 @@ class TaskReadSerial(threading.Thread):
       self.__tty.xonxoff = 0
       self.__tty.rtscts = 0
       self.__tty.timeout = 20
+      logger.info(f"Using USB device {self.__tty.port} with baud {self.__tty.baudrate}")
 
     try:
       if cfg.PRODUCTION:

@@ -226,7 +226,7 @@ class MQTTClient(threading.Thread):
       # Format: s.connect((HOST, PORT))
       s.connect((f"{self.__mqtt_broker}", int(self.__mqtt_port)))
       s.shutdown(socket.SHUT_RDWR)
-      logger.debug(f"Internet connectivity to MQTT broker {self.__mqtt_broker} at port {self.__mqtt_port} available")
+      logger.info(f"Internet connectivity to MQTT broker {self.__mqtt_broker} at port {self.__mqtt_port} available")
       return True
     except Exception as e:
       logger.info(f"Internet connectivity to MQTT broker {self.__mqtt_broker} at port {self.__mqtt_port} "
@@ -422,7 +422,7 @@ class MQTTClient(threading.Thread):
     :param bool retain:
     :return: None
     """
-    logger.debug(f">>")
+    #logger.debug(f">>")
 
     if self.__run:
       logger.warning(f"Last Will/testament is set after run() is called. Not advised per documentation")
@@ -441,7 +441,8 @@ class MQTTClient(threading.Thread):
     Returns:
       None
     """
-    logger.debug(f">> TOPIC={topic}; MESSAGE={message}")
+    logger.debug(f"MQTT publish for TOPIC={topic} with MESSAGE={message}")
+    logger.debug(f"\n")
 
     try:
       mqttmessageinfo = self.__mqtt.publish(topic=topic, payload=message, qos=self.__qos, retain=retain)
@@ -514,7 +515,7 @@ class MQTTClient(threading.Thread):
     return
 
   def run(self):
-    logger.info(f"Broker = {self.__mqtt_broker}>>")
+    logger.debug(f"LOGGER: MQTT broker started")
     self.__run = True
 
     # Wait till there is network connectivity to mqtt broker
