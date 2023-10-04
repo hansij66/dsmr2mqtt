@@ -46,7 +46,7 @@ class Discovery(threading.Thread):
     :param str                  version: version of the program
     """
 
-    logger.debug(">>")
+    logger.debug("LOGGER: init class Discovery >>")
     super().__init__()
     self.__stopper = stopper
     self.__mqtt = mqtt
@@ -66,7 +66,7 @@ class Discovery(threading.Thread):
       None
     """
     d = {}  # d = dict() does not work....
-
+    
     # create device JSON
     logger.debug('LOGGER: create device JSON')
     d["name"] = "Status"
@@ -77,46 +77,62 @@ class Discovery(threading.Thread):
                    "sw_version": self.__version,
                    "model": "P1 USB/dsmr-mqtt",
                    "manufacturer": "https://github.com/smartathome/dsmr2mqtt",
-                   "identifiers": ["dsmr"]
+                   "identifiers": ["dsmr2mqtt"]
                    }
 
     self.__listofjsondicts.append(d)
 
+    """ Exception in thread Thread-4:
+    Traceback (most recent call last):
+      File "/usr/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+        self.run()
+      File "/opt/dsmr2mqtt/hadiscovery.py", line 141, in run
+        self.__create_discovery_JSON()
+      File "/opt/dsmr2mqtt/hadiscovery.py", line 90, in __create_discovery_JSON
+        if int(dsmr.definition[index][dsmr.HA_DISCOVERY]):
+    ValueError: invalid literal for int() with base 10: 'mdi:counter'
+    """
     # iterate through all dsmr.defintions
     logger.debug('LOGGER: iterate through all dsmr.defintions')
     for index in dsmr.definition:
       # select definitions with discovery enabled
+      logger.debug(f'LOGGER: index = {index}')
       if int(dsmr.definition[index][dsmr.HA_DISCOVERY]):
         d = {}
         d["unique_id"] = dsmr.definition[index][dsmr.MQTT_TAG]
         d["state_topic"] = cfg.MQTT_TOPIC_PREFIX + "/" + dsmr.definition[index][dsmr.MQTT_TOPIC]
         d["name"] = dsmr.definition[index][dsmr.DESCRIPTION]
-        print('Name: ' + d["name"])
-        d["unit_of_measurement"] = re.match(".*\[(\w+)\].*", dsmr.definition[index][dsmr.DESCRIPTION]).group(1)
-        d["value_template"] = "{{value_json." + dsmr.definition[index][dsmr.MQTT_TAG] + "}}"
+        logger.debug(f'LOGGER: description = {d["name"]}')
+        if dsmr.definition[index][dsmr.UNIT] != "":
+          #d["unit_of_measurement"] = re.match(".*\[(\w+)\].*", dsmr.definition[index][dsmr.DESCRIPTION]).group(1)
+          d["unit_of_measurement"] = dsmr.definition[index][dsmr.UNIT]
+        d["value_template"] = "{{ value_json." + dsmr.definition[index][dsmr.MQTT_TAG] + " }}"
 
         # https://www.home-assistant.io/integrations/sensor/
         # https://developers.home-assistant.io/docs/core/entity/sensor/#long-term-statistics
-        if d["unit_of_measurement"] == "Wh":
-          d["device_class"] = "energy"
-          d["state_class"] = "total"
-        elif d["unit_of_measurement"] == "W":
-          d["device_class"] = "power"
-          #d["state_class"] = "measurement"
-        elif d["unit_of_measurement"] == "A":
-          d["device_class"] = "current"
-          #d["state_class"] = "measurement"
-        elif d["unit_of_measurement"] == "V":
-          d["device_class"] = "voltage"
-          #d["state_class"] = "measurement"
-        elif d["unit_of_measurement"] == "m3" or d["unit_of_measurement"] == "m\u00b3":
-          d["device_class"] = "gas"
-          d["state_class"] = "total"
+        #if dsmr.definition[index][dsmr.UNIT] == "float" or dsmr.definition[index][dsmr.DATATYPE] == "int":
+        #if any(d['main_color'] == 'red' for d in a):
+        if dsmr.definition[index][dsmr.UNIT] in dsmr.ha_supported_units:
+          if d["unit_of_measurement"] == "kWh":
+            d["device_class"] = "energy"
+            d["state_class"] = "total"
+          elif d["unit_of_measurement"] == "kW":
+            d["device_class"] = "power"
+            #d["state_class"] = "measurement"
+          elif d["unit_of_measurement"] == "A":
+            d["device_class"] = "current"
+            #d["state_class"] = "measurement"
+          elif d["unit_of_measurement"] == "V":
+            d["device_class"] = "voltage"
+            #d["state_class"] = "measurement"
+          elif d["unit_of_measurement"] == "m3" or d["unit_of_measurement"] == "m\u00b3":
+            d["device_class"] = "gas"
+            d["state_class"] = "total"
 
-          # Homeassistant expects m3 and not liters
-          d["value_template"] = "{{value_json." + dsmr.definition[index][dsmr.MQTT_TAG] + "|float/1000|round(0)" + "}}"
-        else:
-          logger.warning(f"Unknown unit_of_measurement = {d['unit_of_measurement']}")
+            # Homeassistant expects m3 and not liters
+            d["value_template"] = "{{value_json." + dsmr.definition[index][dsmr.MQTT_TAG] + "|float/1000|round(0)" + "}}"
+          else:
+            logger.warning(f"Unknown unit_of_measurement = {d['unit_of_measurement']}")
 
         d["icon"] = dsmr.definition[index][dsmr.HA_ICON]
         d["device"] = { "identifiers": [ "dsmr2mqtt" ] }

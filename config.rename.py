@@ -1,27 +1,32 @@
 """
-  Rename to config.py
+Rename to config.py
 
-  Configure:
-  - MQTT client
-  - Home Assistant Discovery
-  - USB P1 serial port
-  - Debug level
+Configure:
+- MQTT client
+- Home Assistant Discovery
+- USB P1 serial port
+- Debug level
 
-  Configure the DSMR messages in dsmr50.py
+Adapt the DSMR messages to be parsed from the meter in dsmr50.py
+
+To test run:
+python3 dsmr-mqtt.py
 
 """
 
 # [ LOGLEVELS ]
 # DEBUG, INFO, WARNING, ERROR, CRITICAL
-loglevel = "INFO"
+loglevel = "DEBUG"
+#loglevel = "INFO"
 
 # [ PRODUCTION ]
 # True if run in production
 # False when running in simulation
+#PRODUCTION = False
 PRODUCTION = True
 
 # File below is used when PRODUCTION is set to False
-# Simulation file can be created in bash/Linux:
+# Own simulation file can be created in bash/Linux:
 # tail -f /dev/ttyUSB0 > dsmr.raw (wait 10-15sec and hit ctrl-C)
 # (assuming that P1 USB is connected as ttyUSB0)
 # Add string "EOF" (without quotes) as last line

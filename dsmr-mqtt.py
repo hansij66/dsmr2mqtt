@@ -2,8 +2,10 @@
 
 """
 DESCRIPTION
-Read DSMR (Dutch Smart Meter Requirements) smart energy meter via P1 USB cable
+Read Fluvius smart energy meter with DSMR5 (Dutch Smart Meter Requirements) spec via P1 USB cable
 Tested on RPi3, RPi4
+
+Forked from the original work by Hans IJntema at https://github.com/hansij66/dsmr2mqtt
 
 4 Worker threads:
 - P1 USB serial port reader
@@ -11,7 +13,7 @@ Tested on RPi3, RPi4
 - MQTT client
 - HA Discovery
 
-Only dsmr v50 is implemented; other versions can be supported by adapting dsmr50.py
+Only DSMR5 is implemented. Other versions can be supported by adapting dsmr50.py
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,8 +29,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-__version__ = "3.0.0"
-__author__  = "Hans IJntema"
+__version__ = "1.0.0"
+__author__  = "https://github.com/smartathome/fluvius2mqtt"
 __license__ = "GPLv3"
 
 import signal
@@ -140,12 +142,15 @@ def main():
 
   # Start all threads
   t_mqtt.start()
+  # Introduce a small delay before starting the parsing, otherwise initial messages cannot be published
+  time.sleep(1)
   t_parse.start()
   t_discovery.start()
   t_serial.start()
 
   # Set status to online
   t_mqtt.set_status(cfg.MQTT_TOPIC_PREFIX + "/status", "online", retain=True)
+  logger.debug(f"LOGGER: ")
   t_mqtt.do_publish(cfg.MQTT_TOPIC_PREFIX + "/sw-version", f"main={__version__}; mqtt={mqtt.__version__}", retain=True)
 
   # block till t_serial stops receiving telegrams/exits
