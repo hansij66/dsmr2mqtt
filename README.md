@@ -24,11 +24,11 @@ Test if P1 adapter is functional and providing dsmr data by running in a bash sh
 * `tail -f /dev/ttyUSB0`
 
 ## Usage:
-* Copy `systemd/power-mqtt.service` to `/etc/systemd/system`
-* Adapt path in `power-mqtt.service` to your install location (default: `/opt/iot/dsmr`)
+* Copy `systemd/dsmr-mqtt.service` to `/etc/systemd/system`
+* Adapt path in `dsmr-mqtt.service` to your install location (default: `/opt/iot/dsmr`)
 * Copy `config.rename.py` to `config.py` and adapt for your configuration (minimal: mqtt ip, username, password)
-* `sudo systemctl enable power-mqtt`
-* `sudo systemctl start power-mqtt`
+* `sudo systemctl enable dsmr-mqtt`
+* `sudo systemctl start dsmr-mqtt`
 
 Use
 * http://mqtt-explorer.com/
