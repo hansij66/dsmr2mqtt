@@ -15,7 +15,6 @@
 
         You should have received a copy of the GNU General Public License
         along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 """
 
 import threading
@@ -53,7 +52,11 @@ class ParseTelegrams(threading.Thread):
     self.__stopper = stopper
     self.__telegram = telegram
     self.__mqtt = mqtt
-    self.__prevjsondict = {}
+    self.__prev_ts = 0
+
+    assert cfg.MQTT_MAXRATE > 0, "MQTT_MAXRATE outside range 1.3600"
+    assert cfg.MQTT_MAXRATE <= 3600, "MQTT_MAXRATE outside range 1.3600"
+    self.__min_ts_interval = int(3600 / cfg.MQTT_MAXRATE)
 
     # Count number of topics which will always be included in MQTT json
     # timestamp key:value topic
@@ -81,7 +84,6 @@ class ParseTelegrams(threading.Thread):
         topic = topic.replace('//', '/')
         message = json.dumps(d, sort_keys=True, separators=(',', ':'))
         self.__mqtt.do_publish(topic, message, retain=False)
-
     return
 
   def __decode_telegram_element(self, index, element, ts, listofjsondicts):
@@ -91,7 +93,7 @@ class ParseTelegrams(threading.Thread):
       # Extract result from telegram element, based on dsmr definition
       # Cast result to type defined in dsmr50
       # .....this is normally "dangerous", as you can define any python function....but it is hardcoded
-      # in dsmr50.py file, which should be ro for regular users
+      # in dsmr50.py file, which should be read-only for regular users
       cast = dsmr.definition[index][dsmr.DATATYPE]
       dsmr_data = re.match(dsmr.definition[index][dsmr.REGEX], element).group(1)
 
@@ -103,14 +105,6 @@ class ParseTelegrams(threading.Thread):
       # If type is string, there is no multiplication factor
       if cast != "str":
         data = eval(cast)(dsmr_data) * eval(cast)(multiply)
-
-        # Check if data is zero while not allowed
-        # TODO: seems not to work? For el_consumed
-        if dsmr.DATAVALIDATION == "1" and data == 0:
-          # throw exception
-          logger.warning(f"Throw exception, data == 0, not allowed")
-          raise ValueError("data == 0, not allowed, skip telegram")
-
       else:
         data = eval(cast)(dsmr_data)
         # logger.debug(f"CAST = {}")
@@ -119,58 +113,23 @@ class ParseTelegrams(threading.Thread):
       # tag:data
       tag = str(dsmr.definition[index][dsmr.MQTT_TAG])
 
-      # Calculate, based on specified maxrate, the minimum time between to mqtt messages for a specific tag
-      # MAXRATE = 0 --> don't publish
-      if int(dsmr.definition[index][dsmr.MAXRATE]) == 0:
-        mintimeinterval = -1
-      else:
-        mintimeinterval = int(3600/int(dsmr.definition[index][dsmr.MAXRATE]))
-
       # MQTT topic
       topic = str(dsmr.definition[index][dsmr.MQTT_TOPIC])
-
-      # TODO we should use the timestamp from dsmr telegram...but not sure yet
-      # about timezone & daylight saving
-      # influxdb timestamp should be UTC epoch
-      # https://stackoverflow.com/questions/8777753/converting-datetime-date-to-utc-timestamp-in-python
-      # if index == "0-0:1.0.0":
-      #  t = datetime.strptime(data, '%y%m%d%H%M%S')
 
       # If topic does not exist yet, create & initialize dictionary for this topic;
       # Add tag:data pairs; which will be converted to mqtt json later on.
       # Add dictionary to list
       if not any(dictionary['topic'] == topic for dictionary in listofjsondicts):
 
-        # TODO
-        # Is this correct?
-        # Append per single dictionary element?
-
-        dict_element = {}
-        dict_element["topic"] = topic
-        dict_element["timestamp"] = ts
-        # if cfg.INFLUXDB:
-        #   d["database"] = cfg.INFLUXDB
+        dict_element = {"topic": topic, "timestamp": ts}
         listofjsondicts.append(dict_element)
 
       for dictionary in listofjsondicts:
         if dictionary['topic'] == topic:
-          # get previous tag:data ts, which is mqtt broadcasted
-          try:
-            prevts = self.__prevjsondict[topic+tag]
-          except KeyError:
-            prevts = 0
-
-          # Calculate time in seconds between between previous mqtt transmission and current
-          timeelapsed = int(ts - prevts)
-
-          # Only broadcast this data:tag if sufficient time has elapsed based on maxrate
-          if (mintimeinterval != -1) and (timeelapsed > mintimeinterval):
             dictionary[tag] = data
 
-            # and store current ts
-            self.__prevjsondict[topic+tag] = ts
-
     except Exception as e:
+      logger.debug(f"Exception {e}")
       pass
 
   def __decode_telegrams(self, telegram):
@@ -186,26 +145,33 @@ class ParseTelegrams(threading.Thread):
     # list of dictionaries of mqtt messages which will be converted to json format
     listofjsondicts = list()
 
-    # global UTC timestamp for all mqtt message for telegraf
-    # this has nanoseconds accuracy
-    # TODO...use timestamp from dsmr telegram
-#    ts = int(round(time.time() * 1000)) * 1000000
-
-    # epoch
+    # epoch time stamp
     ts = int(time.time())
 
-    for element in telegram:
-      try:
-        # Extract the identifier (eg "1-0:1.8.1") of the element
-        # and use this as index for dsmr.definition
-        index = re.match(r"(\d{0,3}-\d{0,3}:\d{0,3}\.\d{0,3}\.\d{0,3}).*", element).group(1)
-        self.__decode_telegram_element(index, element, ts, listofjsondicts)
+    # Calculate time in seconds between between previous mqtt transmission and current
+    # If time between previous mqtt message and now is large enough, send
+    # mqtt message and store current timestamp
+    if (ts - self.__prev_ts) > self.__min_ts_interval:
+      self.__prev_ts = ts
 
-      except Exception as e:
-        # To handle empty lines or lines not matching dsmr definitions (checksum, header, empty line)
-        pass
+      for element in telegram:
+        try:
+          # Extract the identifier (eg "1-0:1.8.1") of the element
+          # and use this as index for dsmr.definition
+          index = re.match(r"(\d{0,3}-\d{0,3}:\d{0,3}\.\d{0,3}\.\d{0,3}).*", element).group(1)
+          self.__decode_telegram_element(index, element, ts, listofjsondicts)
 
-    self.__publish_telegram(listofjsondicts)
+        except Exception as e:
+          logger.debug(f"Exception {e}")
+          # To handle empty lines or lines not matching dsmr definitions (checksum, header, empty line)
+          pass
+
+      logger.debug(f"DICT = {listofjsondicts}")
+
+      self.__publish_telegram(listofjsondicts)
+    else:
+      logger.debug(f"Telegram is skipped; time elapsed since last MQTT message = {(ts - self.__prev_ts)}")
+    return
 
   def run(self):
     logger.debug(">>")

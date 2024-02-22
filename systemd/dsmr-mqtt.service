@@ -1,5 +1,5 @@
 # copy to /etc/systemd/system
-# systemctl enable power-mqtt.service
+# systemctl enable dsmr-mqtt.service
 
 [Unit]
 Description=P1 dsmr smartmeter

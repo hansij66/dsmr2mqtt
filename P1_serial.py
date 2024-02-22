@@ -5,6 +5,11 @@ Read dsmr telgrams from P1 USB serial.
 To test in bash the P1 usb connector:
 raw -echo < /dev/ttyUSB0; cat -vt /dev/ttyUSB0
 
+OR
+sudo apt-get install -y python3-serial
+sudo chmod o+rw /dev/ttyUSB0
+python3 -m serial.tools.miniterm /dev/ttyUSB0 115200 --xonxoff
+
 
 
         This program is free software: you can redistribute it and/or modify
@@ -32,9 +37,9 @@ import config as cfg
 import __main__
 import logging
 import os
-script=os.path.basename(__main__.__file__)
-script=os.path.splitext(script)[0]
-logger = logging.getLogger(script + "." +  __name__)
+script = os.path.basename(__main__.__file__)
+script = os.path.splitext(script)[0]
+logger = logging.getLogger(script + "." + __name__)
 
 
 class TaskReadSerial(threading.Thread):
@@ -66,6 +71,7 @@ class TaskReadSerial(threading.Thread):
       self.__tty.xonxoff = 0
       self.__tty.rtscts = 0
       self.__tty.timeout = 20
+      logger.info(f"Using USB device {self.__tty.port} with baud {self.__tty.baudrate}")
 
     try:
       if cfg.PRODUCTION:
@@ -79,10 +85,8 @@ class TaskReadSerial(threading.Thread):
       self.__stopper.set()
       raise ValueError('Cannot open P1 serial port', cfg.ser_port)
 
-
   def __del__(self):
     logger.debug(">>")
-
 
   def __preprocess(self):
     """
@@ -107,28 +111,28 @@ class TaskReadSerial(threading.Thread):
       try:
         value = re.match(r"1-0:1\.8\.1\((\d{6}\.\d{3})\*kWh\)", element).group(1)
         e_consumed = e_consumed + float(value)
-      except:
+      except AttributeError:
         pass
 
       try:
         value = re.match(r"1-0:1\.8\.2\((\d{6}\.\d{3})\*kWh\)", element).group(1)
         e_consumed = e_consumed + float(value)
-      except:
+      except AttributeError:
         pass
 
       try:
         value = re.match(r"1-0:2\.8\.1\((\d{6}\.\d{3})\*kWh\)", element).group(1)
         e_returned = e_returned + float(value)
-      except:
+      except AttributeError:
         pass
 
       try:
         value = re.match(r"1-0:2\.8\.2\((\d{6}\.\d{3})\*kWh\)", element).group(1)
         e_returned = e_returned + float(value)
-      except:
+      except AttributeError:
         pass
 
-    # Insert the vrrtual entries in the dsmr telegram
+    # Insert the virtual entries in the dsmr telegram
     e_consumed = "{0:10.3f}".format(e_consumed)
     line = f"1-0:1.8.3({e_consumed}*kWh)"
     self.__telegram.append(line)
@@ -136,7 +140,6 @@ class TaskReadSerial(threading.Thread):
     e_returned = "{0:10.3f}".format(e_returned)
     line = f"1-0:2.8.3({e_returned}*kWh)"
     self.__telegram.append(line)
-
 
   def __read_serial(self):
     """
@@ -168,7 +171,7 @@ class TaskReadSerial(threading.Thread):
 
       # First element in telegram starts with "!"
       nrof_elements = 0
-      while (not self.__stopper.is_set()) and (not line.startswith('!') ):
+      while (not self.__stopper.is_set()) and (not line.startswith('!')):
         self.__telegram.append(line)
         line = self.__tty.readline().decode('utf-8').rstrip()
         nrof_elements += 1
@@ -192,7 +195,6 @@ class TaskReadSerial(threading.Thread):
         time.sleep(1.0)
 
     logger.debug("<<")
-
 
   def run(self):
     logger.debug(">>")

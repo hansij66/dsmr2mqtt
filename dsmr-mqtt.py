@@ -29,7 +29,7 @@ Only dsmr v50 is implemented; other versions can be supported by adapting dsmr50
 
 """
 
-__version__ = "3.0.1"
+__version__ = "4.0.0"
 __author__  = "Hans IJntema"
 __license__ = "GPLv3"
 
@@ -137,17 +137,23 @@ def exit_gracefully(signal, stackframe):
 def main():
   logger.debug(">>")
 
+  logger.info(f"P1 serial port = {cfg.ser_port}")
+  logger.info(f"MQTT Max Rate = {cfg.MQTT_MAXRATE}")
+
   # Set last will/testament
   t_mqtt.will_set(cfg.MQTT_TOPIC_PREFIX + "/status", payload="offline", qos=cfg.MQTT_QOS, retain=True)
 
   # Start all threads
   t_mqtt.start()
+  # Introduce a small delay before starting the parsing, otherwise initial messages cannot be published
+  time.sleep(1)
   t_parse.start()
   t_discovery.start()
   t_serial.start()
 
   # Set status to online
   t_mqtt.set_status(cfg.MQTT_TOPIC_PREFIX + "/status", "online", retain=True)
+  logger.debug(f'Meter status set to online')
   t_mqtt.do_publish(cfg.MQTT_TOPIC_PREFIX + "/sw-version", f"main={__version__}; mqtt={mqtt.__version__}", retain=True)
 
   # block till t_serial stops receiving telegrams/exits
@@ -157,6 +163,7 @@ def main():
 
   # Set status to offline
   t_mqtt.set_status(cfg.MQTT_TOPIC_PREFIX + "/status", "offline", retain=True)
+  logger.debug(f'Meter status set to offline')
 
   # Todo check if MQTT queue is empty before setting stopper
   # Use a simple delay of 1sec before closing mqtt
