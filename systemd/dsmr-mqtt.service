@@ -8,9 +8,13 @@ Requires=network.target
 After=network.target
 Wants=network-online.target systemd-networkd-wait-online.service
 
+
+# A python venv environment has been used to install the libraries with PIP (when not available as Debian package)
+# Adapt for your venv path
 [Service]
 Type=idle
-ExecStart=/opt/iot/dsmr/dsmr-mqtt.py
+WorkingDirectory=/opt/iot/dsmr/
+ExecStart=/opt/iot/venv/bin/python3 dsmr-mqtt.py
 #RemainAfterExit=true
 
 # incase log.py and mqtt.py is put in this location

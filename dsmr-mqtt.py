@@ -29,7 +29,7 @@ Only dsmr v50 is implemented; other versions can be supported by adapting dsmr50
 
 """
 
-__version__ = "4.0.1"
+__version__ = "4.0.2"
 __author__  = "Hans IJntema"
 __license__ = "GPLv3"
 
