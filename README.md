@@ -103,6 +103,9 @@ For encrypted P1/dsmr, there is a [fork](https://github.com/wehrmannit/dsmr2mqtt
 GPL v3
 
 ## Versions
+4.0.1
+* Fix for Home Assistant auto discovery (by JoniR)
+
 4.0.0
 * Simplified design
 * Patches from javl
