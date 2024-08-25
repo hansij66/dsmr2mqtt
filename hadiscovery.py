@@ -128,7 +128,7 @@ class Discovery(threading.Thread):
               d["device_class"] = "CURRENT"
 #              d["state_class"] = "measurement"
             elif d["unit_of_measurement"] == "V":
-              d["device_class"] = "V"
+              d["device_class"] = "VOLTAGE"
 #              d["state_class"] = "measurement"
             elif d["unit_of_measurement"] == "m3" or d["unit_of_measurement"] == "m\u00b3":
               d["device_class"] = "GAS"
