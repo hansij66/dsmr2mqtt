@@ -17,3 +17,4 @@ pyserial
 # as missing python libs which are not available via apt
 # are installed with "sudo pip3 install <package> --user" and libs end up in /root/.local/lib
 ##############################################################################
+packaging

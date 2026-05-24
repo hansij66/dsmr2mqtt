@@ -131,9 +131,8 @@ class Discovery(threading.Thread):
               d["device_class"] = "VOLTAGE"
 #              d["state_class"] = "measurement"
             elif d["unit_of_measurement"] == "m3" or d["unit_of_measurement"] == "m\u00b3":
-              d["device_class"] = "GAS"
+              d["device_class"] = dsmr.definition[index][dsmr.MQTT_TOPIC].upper()  # set to water or gas
               d["state_class"] = "total"
-
               # Homeassistant expects m3 and not liters
               d["value_template"] = "{{value_json." + tag_matches[i] + "|float/1000|round(0)" + "}}"
             else:

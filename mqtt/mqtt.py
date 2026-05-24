@@ -50,8 +50,9 @@ import string
 import socket
 import paho.mqtt.client as mqtt_client
 import paho.mqtt as paho_mqtt
-from pkg_resources import parse_version
+# from pkg_resources import parse_version  # deprecated, removed in Python 3.9+
 
+from packaging.version import parse as parse_version
 # Logging
 import __main__
 import logging
@@ -135,11 +136,13 @@ class MQTTClient(threading.Thread):
 
     # clean_session is only implemented for MQTT v3
     if self.__mqtt_protocol == mqtt_client.MQTTv311 or self.__mqtt_protocol == mqtt_client.MQTTv31:
-      self.__mqtt = mqtt_client.Client(self.__mqtt_client_id,
+      self.__mqtt = mqtt_client.Client(callback_api_version = paho_mqtt.client.CallbackAPIVersion.VERSION1,
+                                       client_id = self.__mqtt_client_id,
                                        clean_session=mqtt_cleansession,
                                        protocol=self.__mqtt_protocol)
     elif self.__mqtt_protocol == mqtt_client.MQTTv5:
-      self.__mqtt = mqtt_client.Client(self.__mqtt_client_id,
+      self.__mqtt = mqtt_client.Client(callback_api_version = paho_mqtt.client.CallbackAPIVersion.VERSION1,
+                                       client_id = self.__mqtt_client_id,
                                        protocol=self.__mqtt_protocol)
     else:
       logger.error(f"Unknown MQTT protocol version {mqtt_protocol}....exit")

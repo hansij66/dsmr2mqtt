@@ -41,7 +41,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 DESCRIPTION = 0
 
 # MQTT base topic; will be packed in a json message
-# In this example: <system, el, gas>
+# In this example: <system, el, gas, water>
 MQTT_TOPIC = 1
 
 # MQTT tag in json message
@@ -85,6 +85,7 @@ HA_ICON = 8
 #         "p_consumed":889.0,"p_generated":0.0,"power_failures":1373,"serial":"33363137","tariff_indicator":1,
 #         "timestamp":1708542164}
 #   gas = {"gas_consumed":10142194.0,"serial":"33313137","timestamp":1708542182}
+#   water = {"serial":"33","timestamp":1743416908,"water_consumed":2127.0
 
 
 # Comment what is not being used
@@ -154,12 +155,20 @@ definition = {
 
 # Serial/equipment identifier is truncated to last 8 digits and used as tag in influxdb
 # If full serial is required, remove \d{26} or change to \d{34}
-"0-1:24.2.1":
+"0-1:24.2.3":
   ["Gas consumption", "gas", "gas_consumed", "^.*\((.*)\*m3\)",
    "m\u00b3", "float", "1000", "1", "mdi:counter"],
 
-"0-1:96.1.0":
-  ["Equipment Identifier", "gas", "serial", "^.*\(\d{26}(.*)\)",
+"0-1:96.1.1":
+  ["Equipment Identifier", "gas", "gas_serial", "^.*\(\d{26}(.*)\)",
+   "", "str", "1", "0", "mdi:tag-text-outline"],
+
+"0-2:24.2.1":
+  ["Water consumption", "water", "water_consumed", "^.*\((.*)\*m3\)",
+   "m\u00b3", "float", "1000", "1", "mdi:counter"],
+
+"0-2:96.1.1":
+  ["Equipment Identifier", "water", "water_serial", "^.*\(\d{26}(.*)\)",
    "", "str", "1", "0", "mdi:tag-text-outline"],
 
 "1-0:1.8.1":
