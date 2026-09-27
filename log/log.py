@@ -82,7 +82,7 @@ c_handler.setFormatter(c_format)
 logger.addHandler(c_handler)
 
 # Syslog
-if sys.platform == "linux":
+if sys.platform == "linux" and os.path.exists('/dev/log'):
   s_handler = logging.handlers.SysLogHandler(address='/dev/log')
   # This setLevel determines which messages are processed by this handler (assuming it arrives from global logger)
   s_handler.setLevel(logging.INFO)

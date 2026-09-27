@@ -11,6 +11,8 @@ persist-queue
 pyserial
 # add root (or user which runs script) to group dialout  (/etc/groups)
 
+packaging
+# used in mqtt/mqtt.py for version comparison (replaces pkg_resources)
 
 ##############################################################################
 # run as sudo <script>

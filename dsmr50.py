@@ -95,187 +95,187 @@ HA_ICON = 8
 
 definition = {
 "1-3:0.2.8":
-   ["DSMR Version meter", "system", "dsmr_version", "^.*\((.*)\)",
+   ["DSMR Version meter", "system", "dsmr_version", r"^.*\((.*)\)",
    "", "str", "1", "0", "mdi:counter"],
 
 # Serial/equipment identifier is truncated to last 8 digits and used as tag in influxdb
 # If full serial is required, remove \d{26} or change to \d{34}
 "0-0:96.1.1":
-  ["Equipment identifier", "el", "serial", "^.*\(\d{26}(.*)\)",
+  ["Equipment identifier", "el", "serial", r"^.*\(\d{26}(.*)\)",
    "", "str", "1", "0", "mdi:tag-text-outline"],
 
 "0-0:96.1.4":
-  ["Version information", "el", "version", "^.*\((.*)\)", "",
+  ["Version information", "el", "version", r"^.*\((.*)\)", "",
    "str", "1", "0", "mdi:numeric"],
 
 "0-0:96.7.21":
-  ["Number power failures", "el", "power_failures", "^.*\((.*)\)",
+  ["Number power failures", "el", "power_failures", r"^.*\((.*)\)",
    "", "int", "1", "1", "mdi:transmission-tower-off"],
 
 "0-0:96.7.9":
-  ["Number long power failures", "el", "long_power_failures", "^.*\((.*)\)",
+  ["Number long power failures", "el", "long_power_failures", r"^.*\((.*)\)",
    "", "int", "1", "1", "mdi:transmission-tower-off"],
 
 "0-0:96.14.0":
-  ["Tariff indicator electricity", "el", "tariff_indicator", "^.*\((.*)\)",
+  ["Tariff indicator electricity", "el", "tariff_indicator", r"^.*\((.*)\)",
   "", "int", "1", "1", "mdi:weather-night"],
 
 "1-0:21.7.0":
-  ["Power usage L1", "el", "P1_consumed", "^.*\((.*)\*kW\)",
+  ["Power usage L1", "el", "P1_consumed", r"^.*\((.*)\*kW\)",
    "W", "float", "1000", "1", "mdi:gauge"],
 
 "1-0:41.7.0":
-  ["Power usage L2", "el", "P2_consumed", "^.*\((.*)\*kW\)",
+  ["Power usage L2", "el", "P2_consumed", r"^.*\((.*)\*kW\)",
    "W", "float", "1000", "1", "mdi:gauge"],
 
 "1-0:61.7.0":
-  ["Power usage L3", "el", "P3_consumed", "^.*\((.*)\*kW\)",
+  ["Power usage L3", "el", "P3_consumed", r"^.*\((.*)\*kW\)",
    "W", "float", "1000", "1", "mdi:gauge"],
 
 "1-0:22.7.0":
-  ["Power generation L1", "el", "P1_generated", "^.*\((.*)\*kW\)",
+  ["Power generation L1", "el", "P1_generated", r"^.*\((.*)\*kW\)",
    "W", "float", "1000", "1", "mdi:gauge"],
 
 "1-0:42.7.0":
-  ["Power generation L2", "el", "P2_generated", "^.*\((.*)\*kW\)",
+  ["Power generation L2", "el", "P2_generated", r"^.*\((.*)\*kW\)",
    "W", "float", "1000", "1", "mdi:gauge"],
 
 "1-0:62.7.0":
-  ["Power generation L3", "el", "P3_generated", "^.*\((.*)\*kW\)",
+  ["Power generation L3", "el", "P3_generated", r"^.*\((.*)\*kW\)",
    "W", "float", "1000", "1", "mdi:gauge"],
 
 "1-0:1.7.0":
-  ["Total power usage", "el", "p_consumed", "^.*\((.*)\*kW\)",
+  ["Total power usage", "el", "p_consumed", r"^.*\((.*)\*kW\)",
   "W", "float", "1000", "1", "mdi:gauge"],
 
 "1-0:2.7.0":
-  ["Total power generation", "el", "p_generated", "^.*\((.*)\*kW\)",
+  ["Total power generation", "el", "p_generated", r"^.*\((.*)\*kW\)",
   "W", "float", "1000", "1", "mdi:gauge"],
 
 # Serial/equipment identifier is truncated to last 8 digits and used as tag in influxdb
 # If full serial is required, remove \d{26} or change to \d{34}
 "0-1:24.2.1":
-  ["Gas consumption", "gas", "gas_consumed", "^.*\((.*)\*m3\)",
+  ["Gas consumption", "gas", "gas_consumed", r"^.*\((.*)\*m3\)",
    "m\u00b3", "float", "1000", "1", "mdi:counter"],
 
 "0-1:96.1.0":
-  ["Equipment Identifier", "gas", "serial", "^.*\(\d{26}(.*)\)",
+  ["Equipment Identifier", "gas", "serial", r"^.*\(\d{26}(.*)\)",
    "", "str", "1", "0", "mdi:tag-text-outline"],
 
 "1-0:1.8.1":
-  ["EL consumed (Tariff 1)", "el", "el_consumed1", "^.*\((.*)\*kWh\)",
+  ["EL consumed (Tariff 1)", "el", "el_consumed1", r"^.*\((.*)\*kWh\)",
    "Wh", "float", "1000", "1", "mdi:counter"],
 
 "1-0:1.8.2":
-  ["EL consumed (Tariff 2)", "el", "el_consumed2", "^.*\((.*)\*kWh\)",
+  ["EL consumed (Tariff 2)", "el", "el_consumed2", r"^.*\((.*)\*kWh\)",
    "Wh", "float", "1000", "1", "mdi:counter"],
 
 "1-0:2.8.1":
-  ["EL returned (Tariff 1)", "el", "el_returned1", "^.*\((.*)\*kWh\)",
+  ["EL returned (Tariff 1)", "el", "el_returned1", r"^.*\((.*)\*kWh\)",
    "Wh", "float", "1000", "1", "mdi:counter"],
 
 "1-0:2.8.2":
-  ["EL returned (Tariff 2)", "el", "el_returned2", "^.*\((.*)\*kWh\)",
+  ["EL returned (Tariff 2)", "el", "el_returned2", r"^.*\((.*)\*kWh\)",
    "Wh", "float", "1000", "1", "mdi:counter"],
 
 # Virtual, not existing in dsmr telegram & specification, to sum tarif 1 & 2 to a single message
 "1-0:1.8.3":
-  ["EL consumed", "el", "el_consumed", "^.*\((.*)\*kWh\)",
+  ["EL consumed", "el", "el_consumed", r"^.*\((.*)\*kWh\)",
    "Wh", "float", "1000", "1", "mdi:counter"],
 
 "1-0:2.8.3":
-  ["EL returned", "el", "el_returned", "^.*\((.*)\*kWh\)",
+  ["EL returned", "el", "el_returned", r"^.*\((.*)\*kWh\)",
    "Wh", "float", "1000", "1", "mdi:counter"],
 
 "1-0:32.7.0":
-  ["Voltage L1", "el", "V1", "^.*\((.*)\*V\)",
+  ["Voltage L1", "el", "V1", r"^.*\((.*)\*V\)",
   "V", "float", "1", "1", "mdi:gauge"],
 
 "1-0:52.7.0":
-  ["Voltage L2", "el", "V2", "^.*\((.*)\*V\)",
+  ["Voltage L2", "el", "V2", r"^.*\((.*)\*V\)",
   "V", "float", "1", "1", "mdi:gauge"],
 
 "1-0:72.7.0":
-  ["Voltage L3", "el", "V3", "^.*\((.*)\*V\)",
+  ["Voltage L3", "el", "V3", r"^.*\((.*)\*V\)",
   "V", "float", "1", "1", "mdi:gauge"],
 
 # Current seems to be measured in whole integer numbers (1, 2, 3....); if you need accurate current
 # numbers, you better divide Power by Volt to get a more accurate numer
 #"1-0:31.7.0":
-#  ["Current L1", "el", "I1", "^.*\((.*)\*A\)",
+#  ["Current L1", "el", "I1", r"^.*\((.*)\*A\)",
 #  "A", "int", "1", "1", "mdi:gauge"],
 
 #"1-0:51.7.0":
-#  ["Current L2", "el", "I2", "^.*\((.*)\*A\)",
+#  ["Current L2", "el", "I2", r"^.*\((.*)\*A\)",
 #  "A", "int", "1", "0", "mdi:gauge"],
 
 #"1-0:71.7.0":
-#  ["Current L3", "el", "I3", "^.*\((.*)\*A\)",
+#  ["Current L3", "el", "I3", r"^.*\((.*)\*A\)",
 #  "A", "int", "1", "0", "mdi:gauge"],
 
 "1-0:32.36.0":
-  ["Voltage swells L1", "el", "V1_swells", "^.*\((.*)\)",
+  ["Voltage swells L1", "el", "V1_swells", r"^.*\((.*)\)",
   "", "int", "1", "1", "mdi:elevation-rise"],
 
 "1-0:52.36.0":
-  ["Voltage swells L2", "el", "V2_swells", "^.*\((.*)\)",
+  ["Voltage swells L2", "el", "V2_swells", r"^.*\((.*)\)",
   "", "int", "1", "1", "mdi:elevation-rise"],
 
 "1-0:72.36.0":
-  ["Voltage swells L3", "el", "V3_swells", "^.*\((.*)\)",
+  ["Voltage swells L3", "el", "V3_swells", r"^.*\((.*)\)",
   "", "int", "1", "1", "mdi:elevation-rise"],
 
 "1-0:32.32.0":
-  ["Voltage sags L1", "el", "V1_sags", "^.*\((.*)\)",
+  ["Voltage sags L1", "el", "V1_sags", r"^.*\((.*)\)",
   "", "int", "1", "1", "mdi:elevation-decline"],
 
 "1-0:52.32.0":
-  ["Voltage sags L2", "el", "V2_sags", "^.*\((.*)\)",
+  ["Voltage sags L2", "el", "V2_sags", r"^.*\((.*)\)",
   "", "int", "1", "1", "mdi:elevation-decline"],
 
 "1-0:72.32.0":
-  ["Voltage sags L3", "el", "V3_sags", "^.*\((.*)\)",
+  ["Voltage sags L3", "el", "V3_sags", r"^.*\((.*)\)",
   "", "int", "1", "1", "mdi:elevation-decline"],
 
 #"0-0:96.3.10":
-#  ["Breaker state", "el", "breaker", "^.*\((.*)\)",
+#  ["Breaker state", "el", "breaker", r"^.*\((.*)\)",
 #  "", "int", "1", "1", "mdi:electric-switch"],
 
 #"0-0:17.0.0":
-#  ["Limiter threshold", "el", "limiter", "^.*\((.*)\*kW\)",
+#  ["Limiter threshold", "el", "limiter", r"^.*\((.*)\*kW\)",
 #  "W", "float", "1000", "1", "mdi:speedometer"],
 
 #"1-0:31.4.0":
-#  ["Fuse supervision threshold L1", "el", "fuse", "^.*\((.*)\*A\)",
+#  ["Fuse supervision threshold L1", "el", "fuse", r"^.*\((.*)\*A\)",
 #  "A", "int", "1", "1", "mdi:gauge"],
 
 #"0-0:96.13.0":
-#  ["Text message", "el", "text", "^.*\((.*)\)",
+#  ["Text message", "el", "text", r"^.*\((.*)\)",
 #  "", "str", "1", "1", "mdi:text"],
 
 #"1-0:1.4.0":
-#  ["Current average demand", "el", "avg_dem", "^.*\((.*)\*kW\)",
+#  ["Current average demand", "el", "avg_dem", r"^.*\((.*)\*kW\)",
 #  "W", "float", "1000", "1", "mdi:gauge"]
 
 }
 
 # Not supported:
-#"0-1:24.1.0": ["Device-Type", "device_type", "^.*\((.*)\)", "int, ""1"],
+#"0-1:24.1.0": ["Device-Type", "device_type", r"^.*\((.*)\)", "int, ""1"],
 
-#"1-0:99.97.0": ["Power Failure Event Log (long power failures)", "power_failure_event_log", "^.*\((.*)\)", "string"],
-#"0-0:96.13.0": ["Text message max 1024 characters.", "text_message", "^.*\((.*)\)"],
+#"1-0:99.97.0": ["Power Failure Event Log (long power failures)", "power_failure_event_log", r"^.*\((.*)\)", "string"],
+#"0-0:96.13.0": ["Text message max 1024 characters.", "text_message", r"^.*\((.*)\)"],
 
 #"1-0:1.6.0":
-#  ["Monthly peak timestamp;Monthly peak DST;Monthly peak value", "el", "m_peak_ts;m_peak_dst;m_peak_val", "^.*\((\d{12})(S|W)\)\((.*)\*kW\)",
+#  ["Monthly peak timestamp;Monthly peak DST;Monthly peak value", "el", "m_peak_ts;m_peak_dst;m_peak_val", r"^.*\((\d{12})(S|W)\)\((.*)\*kW\)",
 #  "", "int;str;float", "0", "1", "1", "mdi:chart-bar"],
 
 #"0-0:98.1.0":
-#  ["Historical peaks", "el", "h_peak", "^.*\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)",
+#  ["Historical peaks", "el", "h_peak", r"^.*\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)",
 #  "", "int", "1", "1", "mdi:chart-bar"],
 
 
 # NOT USED; An EPOCH timestamp is added every MQTT message
-# ["Timestamp [s]", "el", "timestamp", "^.*\((\d{12})(S|W)\)", "",
+# ["Timestamp [s]", "el", "timestamp", r"^.*\((\d{12})(S|W)\)", "",
 #"0-0:1.0.0":
-#  ["Timestamp [s]", "el", "timestamp", "^.*\((.*)W\)",
+#  ["Timestamp [s]", "el", "timestamp", r"^.*\((.*)W\)",
 #   "s", "int", "1", "1", "1", "mdi:clock-time-four"],

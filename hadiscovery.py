@@ -102,7 +102,7 @@ class Discovery(threading.Thread):
         if len(tag_matches) == len(description_matches) == re.compile(regex).groups:
           while i < re.compile(regex).groups:
             d = {}
-            d["unique_id"] = tag_matches[i]
+            d["unique_id"] = tag_matches[i] + cfg.HA_ID
             d["state_topic"] = cfg.MQTT_TOPIC_PREFIX + "/" + dsmr.definition[index][dsmr.MQTT_TOPIC]
             d["name"] = description_matches[i]
 

@@ -50,7 +50,7 @@ import string
 import socket
 import paho.mqtt.client as mqtt_client
 import paho.mqtt as paho_mqtt
-from pkg_resources import parse_version
+from packaging.version import parse as parse_version
 
 # Logging
 import __main__
@@ -133,13 +133,21 @@ class MQTTClient(threading.Thread):
                        f"reverting to MQTT v311")
         self.__mqtt_protocol = mqtt_client.MQTTv311
 
+    # paho-mqtt 2.x requires a callback API version as first argument.
+    # VERSION1 keeps the existing (paho 1.x style) callbacks working.
+    client_args = []
+    if parse_version(f"{paho_mqtt.__version__}") >= parse_version("2.0.0"):
+      client_args.append(mqtt_client.CallbackAPIVersion.VERSION1)
+
     # clean_session is only implemented for MQTT v3
     if self.__mqtt_protocol == mqtt_client.MQTTv311 or self.__mqtt_protocol == mqtt_client.MQTTv31:
-      self.__mqtt = mqtt_client.Client(self.__mqtt_client_id,
+      self.__mqtt = mqtt_client.Client(*client_args,
+                                       client_id=self.__mqtt_client_id,
                                        clean_session=mqtt_cleansession,
                                        protocol=self.__mqtt_protocol)
     elif self.__mqtt_protocol == mqtt_client.MQTTv5:
-      self.__mqtt = mqtt_client.Client(self.__mqtt_client_id,
+      self.__mqtt = mqtt_client.Client(*client_args,
+                                       client_id=self.__mqtt_client_id,
                                        protocol=self.__mqtt_protocol)
     else:
       logger.error(f"Unknown MQTT protocol version {mqtt_protocol}....exit")
